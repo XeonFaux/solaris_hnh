@@ -38,9 +38,15 @@ public class JSGUI_Window extends JSGUI_Widget {
         int cur = 0;
 		while(cur <= timeout){
 			for(Widget i = wdg().child; i != null; i = i.next) {
-				if(i instanceof Button){
+				if(i instanceof Button)
+				{
 					Button b = (Button) i;
 					if(b.isChanged()) return b.text.text;
+				}
+				else if (i instanceof CheckBox)
+				{
+					Checkbox c = (Checkbox) i;
+					if (c.isChanged()) return c.lbl.text;
 				}
 			}
 			if (!JSBot.Sleep(25))

@@ -29,7 +29,8 @@ package haven;
 public class CheckBox extends Widget {
 	static Tex box, mark;
 	public boolean a = false;
-	Text lbl;
+	private boolean changed = false;
+	public Text lbl;
 
 	static {
 		Widget.addtype("chk", new WidgetFactory() {
@@ -55,7 +56,7 @@ public class CheckBox extends Widget {
 		if (button != 1)
 			return (false);
 		a = !a;
-		changed(a);
+		change(a);
 		return (true);
 	}
 
@@ -67,7 +68,14 @@ public class CheckBox extends Widget {
 		super.draw(g);
 	}
 
-	public void changed(boolean val) {
+	public boolean isChanged() {
+		if (changed) {
+			changed = false;
+			return true;
+		} else return false;
+	}
+
+	public void change(boolean val) {
 		wdgmsg("ch", a);
 	}
 }
