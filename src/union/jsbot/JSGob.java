@@ -11,17 +11,19 @@ public class JSGob {
 	}
 	
 	/**
-	 * Проверяет, является ли объект персонажем
-	 * @return true если объект - персонаж
-	 */
+     * Checks if the object is a player character.
+     *
+     * @return A {@code Boolean} value. {@code true} if the object is a player, {@code false} otherwise.
+     */
 	public boolean isPlayer() {
 		return gob().isPlayer();
 	}
 	
 	/**
-	 * Проверяет, находится ли объект в пати с вами
-	 * @return true если объект в пати с вами
-	 */
+     * Checks if the object id is in a party with you.
+     *
+     * @return A {@code Boolean} value. {@code true} if the object is in your party, {@code false} otherwise.
+     */
 	public boolean isInParty() {
 		synchronized (JSBotUtils.glob.party.memb) {
 			for (Party.Member m : JSBotUtils.glob.party.memb.values()) {
@@ -33,110 +35,131 @@ public class JSGob {
 	}
 
 	/**
-	 * Проверяет, является ли объект окрашенным в определенный цвет в кинах
-	 * @param group номер группы в кинах (начинается с 0)
-	 * @return true если объект в кинах и окрашен заданным цветом
-	 */
+     * Checks if the object is of a specific colored kin group in your kin list.
+     *
+     * @param Integer group -  The group number in your kin list (starting from 0).
+     * [ 0 - White
+     *   1 - Green
+     *   2 - Red
+     *   3 - Blue
+     *   4 - Teal
+     *   5 - Yellow
+     *   6 - Purple
+     *   7 - Orange ]
+     * @return A {@code Boolean} value. {@code true} if the object is the specific color in your kin list, {@code false} otherwise.
+     */
 	public boolean isGroupKin(int group) {
 		return gob().isGroupKin(group);
 	}
 	
 	/**
-	 * Проверяет, находится ли объект в кинах
-	 * @return true - если находится
-	 */
+     * Checks if the object is in your kin list.
+     *
+     * @return A {@code Boolean} value. {@code true} if the object is in your kin list, {@code false} otherwise.
+     */
 	public boolean isKin() {
 		return gob().isKin();
 	}
 	
 	/**
-	 * Проверяет, состоит ли объект с вами в одной деревне
-	 * @return true - если состоит
-	 */
+     * Checks if the object belongs to the same village as you.
+     *
+     * @return A {@code Boolean} value. {@code true} if the object is in your village, {@code false} otherwise.
+     */
 	public boolean isInYourVillage() {
 		return gob().isInYourVillage();
 	}
 	
 	/**
-	 * Возвращает размер хитбокса, если он есть
-	 * @return переменная типа Coord, содержащяа размеры хитбокса
-	 */
+     * Retrieves the size of the object's hitbox, if available.
+     *
+     * @return A {@code jCoord} object containing the dimensions of the hitbox, or a zero-sized {@code jCoord} object if not available.
+     */
 	public Coord negSize() {
 		if (gob().getneg() != null)
 			return gob().getneg().bs;
 		return new Coord(0, 0);
 	}
 	
-	/**
-	 * Возвращает группу в которую окрашен данный объект в кинах
-	 * @return -1, если не в кинах, иначе номер группы (с 0)
-	 */
+	 /**
+     * Retrieves the group to which this object is colored in your kin list.
+     *
+     * @return A {@code Integer} value of the group number (starting from 0), or -1 if the object is not in your kin list.
+     */
 	public int getKinGroup() {
 		return gob().getKinGroup();
 	}
 	
 	/**
-	 * Возвращает тип кина для данного объекта (я хз что это, но в ней содержится флаг деревни)
-	 * @return Тип кина
-	 */
+     * Retrieves the kin type for this object (contains a village flag)... [Not entirely sure what this is tbh. Don't feel like researching.]
+     *
+     * @return A {@code Integer} value of the kin type for this object.
+     */
 	public int getKinType() {
 		return gob().getKinType();
 	}
 	
 	/**
-	 * Возвращает идентификатор объекта
-	 * @return
-	 */
+     * Retrieves the identifier of the object.
+     *
+     * @return A {@code Integer} value of the object's ID.
+     */
 	public int getID() {
 		return gob_id;
 	}
 	
 	/**
-	 * Возвращает здоровье объекта (в процентах)
-	 * @return
-	 */
+     * Retrieves the health of the object as a percentage.
+     *
+     * @return A {@code Integer} value of the object's health percentage.
+     */
 	public int health() {
 		return gob().getHealth();
 	}
 	
 	/**
-	 * Возвращает значение из блоба по заданному индексу
-	 * @param index Индекс
-	 * @return Значение блоба
-	 */
+     * Retrieves a value from the blob at the specified index.
+     *
+     * @param Integer index - The index of the blob value.
+     * @return A {@code Integer} of the value from the blob.
+     */
 	public int blob(int index) {
 		return gob().GetBlob(index);
 	}
 	
 	/**
-	 * Возвращает весь блоб целиком (в виде массива)
-	 * @return Блоб
-	 */
+     * Retrieves all of the values from the blob.
+     *
+     * @return An {@code Integer Array} containing all the values from the blob.
+     */
 	public int[] blobAll() {
 		return gob().getBlob();
 	}
 	
-	/**
-	 * Проверяет, существует ли еще объект
-	 * @return true если объект существует
-	 */
+	 /**
+     * Checks if the object exists.
+     *
+     * @return A {@code Boolean} value. {@code true} if the object exists, {@code false} otherwise.
+     */
 	public boolean isActual() {
 		return gob() != null;
 	}
 	
 	/**
-	 * Возвращает абсолютные координаты объекта
-	 * @return Абсолютные координаты объекта
-	 */
+     * Retrieves the absolute coordinates of the object.
+     *
+     * @return A {@code jCoord} object containing the object's absolute coordinates.
+     */
 	public Coord position() {
 		return gob().position();
 	}
 	
 	/**
-	 * Проверяет наличие подстроки в слоях ресурсов
-	 * @param layer подстрока ресурса
-	 * @return true, если один из слоев содержит указанную подстроку
-	 */
+     * Checks for the presence of a substring in the resource layers.
+     *
+     * @param String layer - The substring to search for in the resource layers.
+     * @return A {@code Boolean} value. {@code true} if one of the layers contains the specified substring, {@code false} otherwise.
+     */
 	public boolean hasLayer(String layer) {
 		String[] lrs = gob().resnames();
 		for(int i = 0; i < lrs.length; i++)
@@ -145,10 +168,11 @@ public class JSGob {
 	}
 	
 	/**
-	 * Клик по объекту
-	 * @param btn кнопка мыши (1 - LMB, 3 - RMB)
-	 * @param mod модификатор клавиатуры (1 - SHIFT; 2 - CTRL; 4 - ALT; 8 - WIN)
-	 */
+     * Simulates a click on the object.
+     *
+     * @param Integer btn - The mouse button (1 for Left Mouse Button, 3 for Right Mouse Button).
+     * @param Integer mod - The keyboard modifier (1 for SHIFT; 2 for CTRL; 4 for ALT; 8 for WIN).
+     */
 	public void doClick(int btn, int mod) {
 		if(!isActual()) return;
 		if (UI.instance.mapview != null) {
@@ -163,9 +187,10 @@ public class JSGob {
 	}
 	
 	/**
-	 * Клик в указанном оффсете от объекта (в точках карты)
-	 * @param offset оффсет
-	 */
+     * Clicks at a specified offset from the object (in map tiles).
+     *
+     * @param Coord offset - The offset from the object's position.
+     */
 	public void offsetMove(Coord offset) {
 		if(!isActual()) return;
 		if(UI.instance.mapview != null) {
@@ -178,9 +203,10 @@ public class JSGob {
 	}
 	
 	/**
-	 * Взаимодействие данного гоба с предметом в руках (на курсоре) персонажа
-	 * @param mod модификатор клавиатуры (1 - SHIFT; 2 - CTRL; 4 - ALT; 8 - WIN)
-	 */
+     * Simulate a click on the object with the item currently in the player's hands (cursor held object).
+     *
+     * @param Integer mod - The keyboard modifier (1 for SHIFT; 2 for CTRL; 4 for ALT; 8 for WIN).
+     */
 	public void interactClick(int mod) {
 		if(!isActual()) return;
 		if (UI.instance.mapview != null) {
@@ -190,17 +216,19 @@ public class JSGob {
 	}
 	
 	/**
-	 * Возвращает полное имя ресурса объекта
-	 * @return Имя ресурса объекта
-	 */
+     * Retrieves the full resource name of the object.
+     *
+     * @return A {@code String} containing the resource name of the object.
+     */
 	public String name() {
 		return gob().resname();
 	}
 	
 	/**
-	 * Проверяет сидит ли объект
-	 * @return
-	 */
+     * Checks if the object is sitting.
+     *
+     * @return A {@code Boolean} value. {@code true} if the object is sitting, {@code false} otherwise.
+     */
 	public boolean isSitting() {
 		Layered layered = gob().getattr(Layered.class);
 		if (layered != null) {
@@ -209,10 +237,11 @@ public class JSGob {
 		return false;
 	}
 	
-	/**
-	 * Проверяет держит ли объект что-либо в руках (над головой)
-	 * @return
-	 */
+	 /**
+     * Checks if the object is carrying something in its hands (above its head).
+     *
+     * @return A {@code Boolean} value. {@code true} if the object is carrying something, {@code false} otherwise.
+     */
 	public boolean isCarrying() {
 		Layered layered = gob().getattr(Layered.class);
 		if (layered != null) {
@@ -222,10 +251,11 @@ public class JSGob {
 		return false;
 	}
 	
-	/**
-	 * Проверяет движется ли объект
-	 * @return
-	 */
+	 /**
+     * Checks if the object is currently moving.
+     *
+     * @return A {@code Boolean} value. {@code true} if the object is moving, {@code false} otherwise.
+     */
 	public boolean isMoving() {
 		Moving m = gob().getattr(Moving.class);
 		if(m == null)
@@ -234,9 +264,10 @@ public class JSGob {
 	}
 	
 	/**
-	 * Проверяет лежит ли объект
-	 * @return
-	 */
+     * Checks if the object is lying down.
+     *
+     * @return A {@code Boolean} value. {@code true} if the object is lying down, {@code false} otherwise.
+     */
 	public boolean isLaying() {
 		Layered layered = gob().getattr(Layered.class);
 		if (layered != null) {
@@ -246,17 +277,19 @@ public class JSGob {
 	}
 	
 	/**
-	 * Проверяет подсвечен ли объект
-	 * @return
-	 */
+     * Checks if the object is being highlighted.
+     *
+     * @return A {@code Boolean} value. {@code true} if the object is highlighted, {@code false} otherwise.
+     */
 	public boolean isOverlayed() {
 		return gob().getDrawOlay();
 	}
 	
 	/**
-	 * Включает/выключает подсвечивание объектов
-	 * @param b
-	 */
+     * Enables or disables the highlight of an object.
+     *
+     * @param Boolean enabled - {@code true} to enable highlighting, {@code false} to disable.
+     */
 	public void setOverlay(boolean b) {
 		gob().setDrawOlay(b);
 	}

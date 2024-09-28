@@ -11,42 +11,42 @@ public class JSBuff {
 	}
 
 	/**
-	 * Возвращает имя баффа
-	 * 
-	 * @return имя
+	 * Returns the name of the buff.
+	 *
+	 * @return A {@code String} containing the name of the buff.
 	 */
 	public String name() {
 		return wdg().GetName();
 	}
 
 	/**
-	 * Возвращает прогресс под баффом (в процентах)
-	 * 
-	 * @return прогресс
+	 * Returns the progress of the buff as a percentage.
+	 *
+	 * @return A {@code Integer} value of the progress of the buff (0 to 100).
 	 */
 	public int meter() {
 		return wdg().ameter;
 	}
 
 	/**
-	 * Возвращает время до завершения баффа (0..100)
-	 * 
-	 * @return время
+	 * Returns the time remaining until the buff expires (0 to 100).
+	 *
+	 * @return A {@code Integer} value of the remaining time until the buff is completed.
 	 */
 	public int time() {
 		return wdg().GetTimeLeft();
 	}
 
-	private Buff wdg() {
-		return UI.instance.sess.glob.buffs.get((Integer) remote_id);
-	}
-
 	/**
-	 * Проверяет, существует ли еще объект
-	 * 
-	 * @return true если объект существует
+	 * Checks if the buff object still exists.
+	 *
+	 * @return A {@code Boolean} value. {@code true} if the buff object is still active, {@code false} otherwise.
 	 */
 	public boolean isActual() {
 		return wdg() != null;
+	}
+	
+	private Buff wdg() {
+		return UI.instance.sess.glob.buffs.get((Integer) remote_id);
 	}
 }

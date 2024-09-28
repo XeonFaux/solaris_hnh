@@ -23,7 +23,7 @@ import union.JSGUI;
 import union.JSThread;
 
 public class JSHaven {
-	private static Coord unWrapCoord(Object obj) {
+	public static Coord unWrapCoord(Object obj) {
 		if (obj instanceof org.mozilla.javascript.Wrapper) {
 			Object temp = ((org.mozilla.javascript.Wrapper)obj).unwrap();
 			if (temp instanceof Coord)
@@ -54,9 +54,10 @@ public class JSHaven {
 	
 	
 	/**
-	 * Подгружает файл в скрипт.
-	 * @param filename имя файла без расширения, сам файл должен иметь расширение .japi и лежать в папке scripts
-	 * @return	true если инклюд прошел успешно, иначе false
+	 * Loads a script file into the current script environment.
+	 *
+	 * @param String filename - The name of the file without the extension. The file must have a {@code .japi} extension and reside in the "scripts" folder.
+	 * @return A {@code Boolean} value. {@code true} if the include was successful, {@code false} otherwise.
 	 * @since 7.1
 	 */
 	public static boolean include(String filename) {
@@ -83,358 +84,380 @@ public class JSHaven {
 		return true;
 	}
 	
-	/*******************************************************************
-	 * Рака яичек всем, я угощаю!
-	 * 
-	 * Ниже следует раковая копипаста предыдущей хуйни с еба префиксом.
-	 * Теперь в скриптах можно будет творить просто лютый пиздец,
-	 * запутывая противников и себя в говнокоде на ЖС.
-	 * 
-	 * Зато с версии 7.1 мы начнем уважать пользователей (наверное) и
-	 * теперь у нас одновременно будет поддержка старых и новых скриптов,
-	 * пока кого-нибудь это не заебет.
-	 *******************************************************************
-	 * Напутственное слово от Арха!
-	 * Да здравствует стильный и молодежный j-префикс! 
-	 * Свершилось то, чего вы так давно ждали, больше никаких хавен..... и мап.....
-	 * Теперь наш бот будет самым охуенным ботом в хахачике!
-	 * � не важно что в яве половина функций будет обернута через хуйпизду и
-	 * тупой рино не поддерживает недефолтные аргументы, чтоб он сдох!!11
-	 * � вообще педикам молчать и кодить в тряпочкэ!
-	 * 
-	 * *******************************************************************
-	 * Попизди мне тут!
-	 **/
-	
 	/**
-	 * Возвращает переменную типа Coord с заданными координатами
-	 * @param x координата x
-	 * @param y координата y
-	 * @return переменная типа Coord
+	 * Returns a jCoord object representing the specified coordinates.
+	 *
+	 * @param Integer x - The x-coordinate.
+	 * @param Integer y - The y-coordinate.
+	 * @return A {@code jCoord} object.
 	 */
 	public static Coord jCoord(int x, int y){
 		return new Coord(x, y);
 	}
 
 	/**
-	 * Функция создает окно "ввода". �спользуется для ввода текстового или числового значения.
-	 * @param x координата x для отрисовки окна на экране
-	 * @param y координата y для отрисовки окна на экране
-	 * @param header заголовок окна
-	 * @param label текст лейбла над полем ввода
-	 * @return объект JSInputWidget
+	 * Creates an input window for entering text or numerical values.
+	 *
+	 * @param Integer x - The x-coordinate for the window's position on the screen.
+	 * @param Integer y - The y-coordinate for the window's position on the screen.
+	 * @param String header - The title of the window.
+	 * @param String label - The label text above the input field.
+	 * @return A {@code JSInputWidget} object for user input.
 	 */
 	public static JSInputWidget jGetInputWidget(int x, int y, String header, String label){
 		return new JSInputWidget(new Coord(x, y), header, label);
 	}
+	
+	/**
+	 * Overloaded method for creating an input window, using a jCoord position instead.
+	 *
+	 * @param jCoord pos - The coordinates for the window's position on the screen.
+	 * @param String header - The title of the window.
+	 * @param String label - The label text above the input field.
+	 * @return A {@code JSInputWidget} object for user input.
+	 */
+	public static JSInputWidget jGetInputWidget(Coord pos, String header, String label){
+		return new JSInputWidget(pos, header, label);
+	}
 
 	/**
-	 * Приостанавливает текущий поток в котором выполняется бот
-	 * @param timeout Время на которое бот приостанавливается (в милисекундах)
-	 * @return true если слип завершился без интерраптов
+	 * Pauses the current thread for a specified duration.
+	 *
+	 * @param Integer timeout - The duration of the pause in milliseconds.
+	 * @return A {@code Boolean} value. {@code true} if the sleep completed without interruption, {@code false} otherwise.
 	 */
 	public static boolean jSleep(int timeout) {
 		return JSBot.Sleep(timeout);
 	}
 
 	/**
-	 * Выводит сообщение в консоль (системную)
-	 * Функция также позволяет выводить числа и другие объекты без дополнительных преобразований
-	 * @param str Объект который нужно вывести в консоль
+	 * Outputs a message to the system console.
+	 * This function also allows printing numbers and other objects without additional conversions.
+	 *
+	 * @param String str - The object to be printed to the console.
 	 */
 	public static void jPrint(String str) {
 		System.out.println(str);
 	}
 
 	/**
-	 * Выводит сообщение в игровую консоль (Вкладка Messages)
-	 * @param str строка сообщения
+	 * Outputs a message to the in-game console (Messages tab).
+	 *
+	 * @param String str - The message string to be displayed.
 	 */
 	public static void jToConsole(String str) {
 		if(UI.instance.cons != null) UI.instance.cons.out.println(str);
 	}
 
 	/**
-	 * Возвращет объект класса JSWindow указанного окна
-	 * Работа с окнами в соответствующей документации
-	 * @param name имя окна
-	 * @return окно
+	 * Retrieves a JSWindow object representing the specified window.
+	 * For details on working with windows, refer to the corresponding documentation.
+	 *
+	 * @param String name - The name of the window.
+	 * @return The {@code JSWindow} object corresponding to the specified name.
 	 */
 	public static JSWindow jGetWindow(String name) {
 		return JSBotUtils.getWindow(name);
 	}
 	
 	/**
-	 * Возвращает стадик персонажа, с котороым можно работать как с обычным инвентарем
-	 * @return объект типа JSInventory
+	 * Retrieves the player's study window, allowing interaction as with a standard inventory.
+	 *
+	 * @return A {@code JSInventory} object representing the study window's grid.
 	 */
 	public static JSInventory jGetStudy() {
 		return JSBotUtils.getStudy();
 	}
 
 	/**
-	 * Посылает запрос на пати указанному игроку
-	 * @param charname имя персонажа
-	 * @return true в случае успеха
+	 * Sends a party invitation to the specified player.
+	 *
+	 * @param String name - The name of the character to invite.
+	 * @return  A {@code Boolean} value. {@code true} if the invitation was successfully sent, {@code false} otherwise.
 	 */
-	public static boolean jSendParty(String charname) {
-		return JSBotUtils.buddyAct(charname, "inv"); 
+	public static boolean jSendParty(String name) {
+		return JSBotUtils.buddyAct(name, "inv"); 
 	}
 
 	/**
-	 * Открывает личную переписку с указанным персонажем из кин листа
-	 * @param charname имя персонажа
-	 * @return true в случае успеха
+	 * Opens a private chat with the specified character from the friend list.
+	 *
+	 * @param String name - The name of the character to chat with.
+	 * @return A {@code Boolean} value. {@code true} if the chat window was successfully opened, {@code false} otherwise.
 	 */
-	public static boolean jPrivateChat(String charname) {
-		return JSBotUtils.buddyAct(charname, "chat"); 
+	public static boolean jPrivateChat(String name) {
+		return JSBotUtils.buddyAct(name, "chat"); 
 	}
 
 	/**
-	 * Дискрайбнуть (передать кин) указанного чара
-	 * @param charname имя персонажа
-	 * @return true в случае успеха
+	 * Describes (or sends a friend request to) the specified character.
+	 *
+	 * @param String name - The name of the character to describe.
+	 * @return A {@code Boolean} value. {@code true} if the description was successfully sent, {@code false} otherwise.
 	 */
-	public static boolean jDescribeChar(String charname) {
-		return JSBotUtils.buddyAct(charname, "desc"); 
+	public static boolean jDescribeChar(String name) {
+		return JSBotUtils.buddyAct(name, "desc"); 
 	}
 
 	/**
-	 * Выгнать чара из деревни (доступно лауспикеру) указанного чара
-	 * @param charname имя персонажа
-	 * @return true в случае успеха
+	 * Exiles the specified character from the village (available to the Lawspeaker).
+	 *
+	 * @param String name - The name of the character to be exiled.
+	 * @return A {@code Boolean} value. {@code true} if the operation was successful, {@code false} otherwise.
 	 */
-	public static boolean jExileChar(String charname) {
-		return JSBotUtils.buddyAct(charname, "exile"); 
+	public static boolean jExileChar(String name) {
+		return JSBotUtils.buddyAct(name, "exile"); 
 	}
 
 	/**
-	 * Закончить анальную "дружбу" с персонажем из кин листа, работает как "End kinship".
-	 * Повторный вызов команды сработает как "Forget".
-	 * @param charname имя персонажа
-	 * @return true в случае успеха
+	 * Ends the kinship with the specified character from the friend list, functioning as "End kinship."
+	 * A subsequent call to this method will act as "Forget."
+	 *
+	 * @param String name - The name of the character.
+	 * @return A {@code Boolean} value. {@code true} if the operation was successful, {@code false} otherwise.
 	 */
-	public static boolean jEndKinshipForget(String charname) {
-		return JSBotUtils.buddyAct(charname, "rm"); 
+	public static boolean jEndKinshipForget(String name) {
+		return JSBotUtils.buddyAct(name, "rm"); 
 	}
 
 	/**
-	 * Возвращает масив окон с указанным именем (удобно для Seedbag)
-	 * @param name имя окна
-	 * @return массив окон
+	 * Retrieves an array of all the windows with the specified name (useful for Seedbags).
+	 *
+	 * @param String name - The name of the window.
+	 * @return A {@code JSWindow[]} array of windows.
 	 */
 	public static JSWindow[] jGetWindows(String name) {
 		return JSBotUtils.getWindows(name);
 	}
 
 	/**
-	 * Завершает выполнение скрипта
+	 * Terminates the execution of the script.
 	 */
 	public static void jExit() {
 		JSBot.Stop();
 	}
 
 	/**
-	 * Завершает текущую сессию персонажа (логаут)
+	 * Logs out the current character session.
 	 */
 	public static void jLogout() {
 		JSBotUtils.logoutChar();
 	}
 
 	/**
-	 * Залогиниться за персонажа с указанным логином
-	 * @param acc логин персонажа
-	 * @return true, если удалось залогиниться
+	 * Logs in to the character with the specified account name.
+	 *
+	 * @param String acc - The login name of the character.
+	 * @return A {@code Boolean} value. {@code true} if the login was successful, {@code false} otherwise.
 	 */
 	public static boolean jLogin(String acc) {
 		return LoginScreen.login(acc);
 	}
 
 	/**
-	 * Выбрать чара с указанным именем
-	 * @param charname имя чара
-	 * @return true, если выбрать чара удалось
+	 * Selects the character with the specified name.
+	 *
+	 * @param String name - The name of the character to select.
+	 * @return A {@code Boolean} value. {@code true} if the character was successfully selected, {@code false} otherwise.
 	 */
-	public static boolean jSelectChar(String charname) {
-		return Charlist.choose_player(charname);
+	public static boolean jSelectChar(String name) {
+		return Charlist.choose_player(name);
 	}
 	
 	/**
-	 * Возвращает true если на экране есть список выбора персонажа.
-	 * @return
+	 * Checks if a character selection list is currently displayed on the screen.
+	 *
+	 * @return A {@code Boolean} value. {@code true} if the character selection list is present, {@code false} otherwise.
 	 */
 	public static boolean jHaveCharlist(){
 		return JSBotUtils.haveCharlist();
 	}
 
 	/**
-	 * Проверяет, находится ли персонаж под аггро
-	 * @return true, если под аггро
+	 * Checks if the character is currently under aggro.
+	 *
+	 * @return A {@code Boolean} value. {@code true} if the character is under aggro, {@code false} otherwise.
 	 */
 	public static boolean jHaveAggro() {
 		return JSBotUtils.haveAggro;
 	}
 
 	/**
-	 * Функция получает значение счетчика верования для определенного параметра
-	 * Окно белифсов должно быть открыто
-	 * @param name �мя белифса. Допустимые значения: life, night, civil, nature, martial, change
-	 * @return Возвращает значение -5...5 в случае успеха или -255 в случае ошибки.
+	 * Retrieves the belief counter value for a specified parameter.
+	 * The belief window must be open.
+	 *
+	 * @param String name - The name of the belief. Acceptable values: life, night, civil, nature, martial, change.
+	 * @return An {@code Integer} value of the belief value ranging from {@code -5} to {@code 5} if successful, or {@code -255} in case of an error.
 	 */
 	public static int jGetBelief(String name) {
 		return JSBotUtils.get_belief(name);
 	}
 
 	/**
-	 * Функция двигает ползунок белифсов. Окно белифсов должно быть открыто
-	 * @param name �мя белифса. Допустимые значения: life, night, civil, nature, martial, change
-	 * @param val Значение. Должно быть -1...1
-	 * @return true в случае успеха, иначе false
+	 * Moves the belief slider. The belief window must be open.
+	 *
+	 * @param String name - The name of the belief. Acceptable values: life, night, civil, nature, martial, change.
+	 * @param Integer val - The value to set, which must be -1 or 1.
+	 * @return A {@code Boolean} value. {@code true} if the operation was successful, {@code false} otherwise.
 	 */
 	public static boolean jBuyBelief(String name, int val) {
 		return JSBotUtils.buy_belief(name, val);
 	}
 
 	/**
-	 * Возвращает список текущих чатов
-	 * Работу с чатами смотреть в соответствующей документации
-	 * @return Список чатов
+	 * Retrieves a list of current open chats.
+	 * For detailed operations with chats, refer to the corresponding documentation.
+	 *
+	 * @return A {@code JSChat[]} array representing the current open chats.
 	 */
 	public static JSChat[] jGetChats() {
 		return JSBotUtils.getChats();
 	}
 
 	/**
-	 * Выбрать нужный пункт контекстного меню
-	 * @param option_name имя пункта
+	 * Selects the specified option from the context menu.
+	 *
+	 * @param String name - The name of the menu option to select.
 	 */
-	public static void jSelectContextMenu(String option_name) {
-		JSBotUtils.selectPopupMenuOpt(option_name);
+	public static void jSelectContextMenu(String name) {
+		JSBotUtils.selectPopupMenuOpt(name);
 	}
 	
 	/**
-	 * Выбрать нужный пункт контекстного меню
-	 * @param option_name имя пункта
+	 * Selects the specified option from the popup menu.
+	 *
+	 * @param String name - The name of the menu option to select.
 	 */
-	public static void jSelectPopupMenu(String option_name) {
-		jSelectContextMenu(option_name);
+	public static void jSelectPopupMenu(String name) {
+		jSelectContextMenu(name);
 	}
 	
 	/**
-	 * Закрывает контекстное меню, если оно есть
+	 * Closes the context menu if it is open.
 	 */
 	public static void jClosePopup() {
 		JSBotUtils.closePopup();
 	}
 
 	/**
-	 * Послать действие на сервер
-	 * @param name имя действия (например "mine")
+	 * Sends an action to the server.
+	 *
+	 * @param String name - The name of the action.
+	 * Example: jSendAction("mine");
 	 */
 	public static void jSendAction(String name) {
 		JSBotUtils.sendAction(name);
 	}
 
 	/**
-	 * Послать действие на сервер, но с двумя параметрами
-	 * @param name имя первого действия
-	 * @param name2 имя второго действия
-	 * Пример: sendDoubleAction("craft", "axe");
+	 * Sends an action to the server with two parameters.
+	 *
+	 * @param String name - The name of the first action.
+	 * @param String name2 - The name of the second action.
+	 * Example: jSendDoubleAction("craft", "axe");
 	 */
 	public static void jSendDoubleAction(String name, String name2) {
 		JSBotUtils.sendAction(name, name2);
 	}
 
 	/**
-	 * Выводит текст сообщения в игре (там где всякие "This land is owned by someone")
-	 * @param message текст сообщения
+	 * Outputs a message in-game (where messages like "This land is owned by someone" appear).
+	 *
+	 * @param String message - The text of the message to display.
 	 */
 	public static void jInGamePrint(String message) {
 		JSBotUtils.slenPrint(message);
 	}
 
 	/**
-	 * Открывает/закрывает инвентарь игрока в зависимости от того закрыт/открыт ли он
+	 * Toggles the player's inventory open or closed based on its current state.
 	 */
 	public static void jToggleInventory() {
 		JSBotUtils.openInventory();
 	}
 
 	/**
-	 * Открывает/закрывает эквип (Equipment) игрока...
+	 * Toggles the player's equipment window open or closed based on its current state.
 	 */
 	public static void jToggleEquipment() {
 		JSBotUtils.openEquipment();
 	}
 
 	/**
-	 * Открывает/закрывает окно статистики (Character Sheet) игрока...
+	 * Toggles the character sheet window open or closed based on its current state.
 	 */
 	public static void jToggleSheet() {
 		JSBotUtils.openSheet();
 	}
 
 	/**
-	 * Возвращает значение подсказки в указанном (по счету) блоке в окне постройки
-	 * @param name имя окна
-	 * @param pos позиция блока с ресурсами (нумерация с 1)
-	 * @return текст подсказки
+	 * Returns the tooltip value for the specified block in the building window.
+	 *
+	 * @param String name - The name of the window.
+	 * @param Integer pos - The position of the resource block (1-based index, starting from 1).
+	 * @return A {@code String} containing the text of the tooltip.
 	 */
 	public static String jGetBuildToolTip(String name, int pos) {
 		return JSBotUtils.getISBoxValue(name, pos, 0);
 	}
 
 	/**
-	 * Возвращает имя ресурса в указанном (по счету) блоке в окне постройки
-	 * @param name имя окна
-	 * @param pos позиция блока с ресурсами (нумерация с 1)
-	 * @return имя ресурса
+	 * Retrieves the name of the resource in the specified block of the building window.
+	 *
+	 * @param String name - The name of the window.
+	 * @param Integer pos - The position of the resource block (numbering starts from 1).
+	 * @return A {@code String} representing the name of the resource.
 	 */
 	public static String jGetBuildResName(String name, int pos) {
 		return JSBotUtils.getISBoxValue(name, pos, 1);
 	}
 
 	/**
-	 * Возвращает значения в указанном (по счету) блоке в окне постройки
-	 * @param name имя окна
-	 * @param pos позиция блока с ресурсами (нумерация с 1)
-	 * @return значение в виде a/b/c
+	 * Retrieves the values in the specified block of the building window.
+	 *
+	 * @param String name - The name of the window.
+	 * @param Integer pos - The position of the resource block (numbering starts from 1).
+	 * @return A {@code String} in the format a/b/c representing the values.
 	 */
 	public static String jGetBuildValues(String name, int pos) {
 		return JSBotUtils.getISBoxValue(name, pos, 2);
 	}
 
 	/**
-	 * Берет в руки вещь из окна постройки
-	 * @param name имя окна постройки
-	 * @param pos позиция блока с ресурсами
+	 * Picks up the item from the building window.
+	 *
+	 * @param String name - The name of the building window.
+	 * @param Integer pos - The position of the resource block.
 	 */
 	public static void jTakeBuildItem(String name, int pos) {
 		JSBotUtils.isBoxAct(name, pos, 0);
 	}
 
 	/**
-	 * Перемещает в инвентарь игрока вещь (одну за один вызов функции) из окна постройки
-	 * @param name имя окна постройки
-	 * @param pos позиция блока с ресурсами
+	 * Transfers an item (one at a time) from the building window to the player's inventory.
+	 *
+	 * @param String name - The name of the building window.
+	 * @param Integer pos - The position of the resource block.
 	 */
 	public static void jTransferBuildItem(String name, int pos) {
 		JSBotUtils.isBoxAct(name, pos, 1);
 	}
 
 	/**
-	 * Проверяет открыто ли окно
-	 * @param wnd имя окна
-	 * @return true, если открыто
+	 * Checks if the specified window is open.
+	 *
+	 * @param String wnd - The name of the window.
+	 * @return A {@code Boolean} value. {@code true} if the window is open, {@code false} otherwise.
 	 */
 	public static boolean jHaveWindow(String wnd) {
 		return JSBotUtils.haveWindow(wnd);
 	}
 
 	/**
-	 * Проверяет имя текущего курсора с указанным
-	 * @param cur имя курсора (можно посмотреть по ctrl+D)
-	 * @return true, если именя совпадают
+	 * Checks if the current cursor matches the specified name.
+	 *
+	 * @param String cur - The name of the cursor (can be viewed using Debug Mode [Ctrl + D] ).
+	 * @return A {@code Boolean} value. {@code true} if the names match, {@code false} otherwise.
 	 */
 	public static boolean jIsCursor(String cur) {
 		cur = cur.toLowerCase();
@@ -442,17 +465,19 @@ public class JSHaven {
 	}
 
 	/**
-	 * Возвращает имя текущего курсора
-	 * @return имя курсора
+	 * Retrieves the name of the current cursor.
+	 *
+	 * @return A {@code String} representing the name of the cursor.
 	 */
 	public static String jGetCursor() {
 		return JSBotUtils.getCursorName();
 	}
 
 	/**
-	 * Возвращает объект типа JSEquip для работы с инвентарем. 
-	 * Доступные методы в соответствующей документации. 
-	 * @return объект типа JSEquip, ели откруто окно эквипа, иначе null
+	 * Retrieves the Equipment Window if open.
+	 * Available methods can be found in the corresponding documentation.
+	 *
+	 * @return An {@code JSEquip} object if the equipment window is open; {@code null} otherwise.
 	 */
 	public static JSEquip jGetJSEquip(){
 		if(JSBotUtils.haveWindow("Equipment"))
@@ -461,33 +486,38 @@ public class JSHaven {
 	}
 
 	/**
-	 * Выбросить на землю объект, который на курсоре
-	 * @param mod модификатор клавиатуры
+	 * Drops the object currently held by the cursor onto the ground.
+	 *
+	 * @param Integer mod - The keyboard modifier (1 for SHIFT; 2 for CTRL; 4 for ALT; 8 for WIN).
 	 */
 	public static void jDropObject(int mod) {
 		JSBotUtils.dropObj(mod);
 	}
 
 	/**
-	 * Возвращает вещь на курсоре
-	 * @return объект JSItem или null, если ничего не держим в руках
+	 * Retrieves the item currently being dragged by the cursor.
+	 *
+	 * @return A {@code JSItem} object, or {@code null} if nothing is being held.
 	 */
 	public static JSItem jGetDraggingItem() {
 		return JSBotUtils.getItemDrag();
 	}
 
 	/**
-	 * Проверяет наличие окна крафта
-	 * @param wnd название крафта
-	 * @return true, если окно есть
+	 * Checks for the presence of a crafting window.
+	 *
+	 * @param String wnd - The name of the crafting window.
+	 * @return A {@code Boolean} value. {@code true} if the crafting window exists; {@code false} otherwise.
 	 */
 	public static boolean jHaveCraft(String wnd) {
 		return JSBotUtils.checkCraft(wnd);
 	}
 
 	/**
-	 * Ждет появления окна крафта
-	 * @param wnd название крафта
+	 * Waits for the specified crafting window to appear.
+	 *
+	 * @param String wnd - The name of the crafting window.
+	 * @param Integer timeout - The maximum time to wait in milliseconds.
 	 */
 	public static void jWaitCraft(String wnd, int timeout) {
 		int cur = 0;
@@ -503,7 +533,7 @@ public class JSHaven {
 	}
 	
 	/**
-	 * Закрывает окно крафта
+	 * Closes the crafting window if it is open.
 	 */
 	public static void jCloseCraft() {
 		if(UI.instance.make_window != null)
@@ -511,8 +541,9 @@ public class JSHaven {
 	}
 
 	/**
-	 * Скрафтить вещь
-	 * @param all если true, то крафтит все вещи, иначе крафтит одну
+	 * Crafts an item.
+	 *
+	 * @param Boolean all - If {@code true}, crafts all items; otherwise, crafts one item.
 	 */
 	public static void jCraftItem(boolean all) {
 		if(all)
@@ -522,34 +553,38 @@ public class JSHaven {
 	}
 
 	/**
-	 * Включает/отключает рендеринг
-	 * @param b включает если true
+	 * Enables or disables rendering.
+	 *
+	 * @param Boolean b - If {@code true}, rendering is enabled; otherwise, it is disabled.
 	 */
 	public static void jSetRendering(boolean b) {
 		JSBotUtils.setRenderMode(b);
 	}
 
 	/**
-	 * Возвращает все баффы, которые сейчас есть
-	 * Работа с баффами в соответствующей документации
-	 * @return массив баффов
+	 * Retrieves all current buffs.
+	 * For operations with buffs, refer to the corresponding documentation.
+	 *
+	 * @return An array of {@code JSBuff[]} objects representing the current buffs.
 	 */
 	public static JSBuff[] jGetBuffs(){
 		return JSBotUtils.getBuffs();
 	}
 
 	/**
-	 * Проверяет наличие контекстного меню
-	 * @return true, если меню открыто
+	 * Checks for the presence of a context menu.
+	 *
+	 * @return A {@code Boolean} value. {@code true} if a context menu is open; {@code false} otherwise.
 	 */
 	public static boolean jHavePopup() {
 		return JSBotUtils.havePopupMenu();
 	}
 
 	/**
-	 * Проверяет наличие пункта в контекстном меню
-	 * @param opt имя пункта
-	 * @return true, меню содержит указанный пункт
+	 * Checks if a specified option exists in the context menu.
+	 *
+	 * @param String opt - The name of the menu option.
+	 * @return A {@code Boolean} value. {@code true} if the context menu contains the specified option; {@code false} otherwise.
 	 */
 	public static boolean jHavePopupOption(String opt) {
 		if(!JSBotUtils.havePopupMenu()) return false;
@@ -557,32 +592,27 @@ public class JSHaven {
 	}
 
 	/**
-	 * Проверяет наличие прогресса (песочные часы)
-	 * @return true, если они есть
+	 * Checks for the presence of a progress indicator (hourglass).
+	 *
+	 * @return A {@code Boolean} value. {@code true} if the hourglass is present; {@code false} otherwise.
 	 */
 	public static boolean jHaveHourglass() {
 		return JSBotUtils.hourGlass;
 	}
-	
-	/**
-	 * Проверяет наличие прогресса
-	 * @return
-	 */
-	public static boolean jHaveProgress() {
-		return jHaveHourglass();
-	}
 
 	/**
-	 * Возвращает текущую скорость персонажа (0..3)
-	 * @return скорость
+	 * Retrieves the current movement speed of the character (range 0 to 3).
+	 *
+	 * @return An {@code Integer} representing the speed.
 	 */
 	public static int jGetSpeed() {
 		return JSBotUtils.getSpeed();
 	}
 
 	/**
-	 * Установливает текущую скорость передвижения персонажа
-	 * @param speed скорость персонажа (0..3)
+	 * Sets the current movement speed of the character.
+	 *
+	 * @param Integer speed - The movement speed of the character (range 0 to 3).
 	 */
 	public static void jSetSpeed(int speed) {
 		if(speed < 0)
@@ -593,89 +623,99 @@ public class JSHaven {
 	}
 
 	/**
-	 * Возвращает абсолютный голод персонажа
-	 * @return голод
+	 * Retrieves the absolute hunger level of the character.
+	 *
+	 * @return An {@code Integer} representing the hunger level.
 	 */
 	public static int jGetHungry() {
 		return JSBotUtils.playerHungry;
 	}
 
 	/**
-	 * Возвращает софтХП игрока
-	 * @return софтХП
+	 * Retrieves the soft HP (Health Points) of the player.
+	 *
+	 * @return An {@code Integer} representing the soft HP.
 	 */
 	public static int jGetSHP() {
 		return JSBotUtils.playerSHP;
 	}
 
 	/**
-	 * Возвращает хардХП игрока
-	 * @return хардХП
+	 * Retrieves the hard HP (Health Points) of the player.
+	 *
+	 * @return An {@code Integer} representing the hard HP.
 	 */
 	public static int jGetHHP() {
 		return JSBotUtils.playerHHP;
 	}
 
 	/**
-	 * Возвращает максимальное количество ХП игрока
-	 * @return максХП
+	 * Retrieves the maximum HP (Health Points) of the player.
+	 *
+	 * @return An {@code Integer} representing the maximum HP.
 	 */
 	public static int jGetMHP() {
 		return JSBotUtils.playerMHP;
 	}
 
 	/**
-	 * Возвращает усталость персонажа
-	 * @return усталость
+	 * Retrieves the stamina level of the character.
+	 *
+	 * @return An {@code Integer} representing the stamina.
 	 */
 	public static int jGetStamina() {
 		return JSBotUtils.playerStamina;
 	}
 
 	/**
-	 * Возвращает идентификатор персонажа
-	 * @return идентификатор
+	 * Retrieves the unique identifier of the character.
+	 *
+	 * @return An {@code Integer} representing the character ID.
 	 */
 	public static int jGetMyID() {
 		return JSBotUtils.playerID;
 	}
 	
 	/**
-	 * Возвращает объект персонажа в качестве JSGob
-	 * @return
+	 * Retrieves the character object as a JSGob.
+	 *
+	 * @return A {@code JSGob} object representing the character.
 	 */
 	public static JSGob jGetMyGob() {
 		return new JSGob(jGetMyID());
 	}
 
 	/**
-	 * Проверяет двигается ли персонаж
-	 * @return true, если двигается
+	 * Checks if the character is currently moving.
+	 *
+	 * @return A {@code Boolean} value. {@code true} if the character is moving; {@code false} otherwise.
 	 */
 	public static boolean jIsMoving() {
 		return JSBotUtils.isMoving();
 	}
 
 	/**
-	 * Проверяет наличие предмета в руках (на курсоре)
-	 * @return true, если персонаж что-то держит
+	 * Checks if the character is holding an item (on the cursor).
+	 *
+	 * @return A {@code Boolean} value. {@code true} if the character is dragging an item; {@code false} otherwise.
 	 */
 	public static boolean jIsDragging() {
 		return JSBotUtils.isDragging();
 	}
 
 	/**
-	 * Проверяет готово ли окно крафта
-	 * @return true, если готово
+	 * Checks if the crafting window is ready.
+	 *
+	 * @return A {@code Boolean} value. {@code true} if the crafting window is ready; {@code false} otherwise.
 	 */
 	public static boolean jIsCraftReady() {
 		return JSBotUtils.isCraftReady();
 	}
 
 	/**
-	 * Проигрывает музыку указанное количество миллесекунд, не прерывая
-	 * выполнение скрипта
-	 * @param msec время проигрывания
+	 * Plays a beep sound for the specified duration without interrupting script execution.
+	 *
+	 * @param Integer msec - The duration in milliseconds to play the beep sound.
 	 */
 	public static void jPlayBeep(final int msec) {
 		new Thread(new Runnable() {
@@ -689,10 +729,11 @@ public class JSHaven {
 	}
 	
 	/**
-	 * Проигрывает звук указанное количество раз с определенной задержкой
-	 * @param resname имя ресурса из папки res/sfx (пример: jPlaySound("sfx/chop", 500, 5);)
-	 * @param delay время задержки между проигрыванием звука
-	 * @param times количество повторений
+	 * Plays a sound a specified number of times with a defined delay between plays.
+	 *
+	 * @param String resname - The name of the resource from the res/sfx folder (e.g., jPlaySound("sfx/chop", 500, 5);).
+	 * @param Integer delay - The delay in milliseconds between each sound play.
+	 * @param Integer times - The number of times to repeat the sound.
 	 */
 	public static void jPlaySound(final String resname, final int delay, final int times) {
 		new Thread(new Runnable() {
@@ -719,7 +760,10 @@ public class JSHaven {
 	}
 
 	/**
-	 * Функция ждет появления контекстного меню
+	 * Waits for the context menu to appear.
+	 *
+	 * @param Integer timeout - The maximum time to wait in milliseconds.
+	 * @return A {@code Boolean} value. {@code true} if the menu appears within the timeout; {@code false} otherwise.
 	 */
 	public static boolean jWaitPopup(int timeout) {
 		int curr = 0; if(timeout == 0) timeout = 10000;
@@ -734,8 +778,10 @@ public class JSHaven {
 	}
 
 	/**
-	 * Функция ждет начала движения персонажа
-	 * @param timeout максимальное время ожидания
+	 * Waits for the player's character to start moving.
+	 *
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
+	 * @return A {@code Boolean} value. {@code true} if the movement starts within the timeout period, {@code false} otherwise.
 	 */
 	public static boolean jWaitStartMove(int timeout) {
 		int curr = 0; if(timeout == 0) timeout = 10000;
@@ -750,8 +796,10 @@ public class JSHaven {
 	}
 
 	/**
-	 * Функция ждет конца завершения движения игрока
-	 * @param timeout максимальное время ожидания
+	 * Waits for the player's character to stop moving.
+	 *
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
+	 * @return A {@code Boolean} value. {@code true} if the movement stops within the timeout period, {@code false} otherwise.
 	 */
 	public static boolean jWaitEndMove(int timeout) {
 		int curr = 0; if(timeout == 0) timeout = 10000;
@@ -766,8 +814,9 @@ public class JSHaven {
 	}
 
 	/**
-	 * Ждет начало, а затем завершение движения персонажа
-	 * @param timeout максимальное время ожидания
+	 * Waits for the player's character to start moving, then waits for it to stop.
+	 *
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
 	 */
 	public static void jWaitMove(int timeout) {
 		if (!jWaitStartMove(timeout)) return;
@@ -775,9 +824,11 @@ public class JSHaven {
 	}
 
 	/**
-	 * Функция ждет начала движения объекта
-	 * @param gob id объекта
-	 * @param timeout максимальное время ожидания
+	 * Waits for the specified object (Gob) to start moving.
+	 *
+	 * @param Integer gob - The ID of the object.
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
+	 * @return A {@code Boolean} value. {@code true} if the object starts moving within the timeout period, {@code false} otherwise.
 	 */
 	public static boolean jWaitStartMoveGob(int gob, int timeout) {
 		int curr = 0; if(timeout == 0) timeout = 10000;
@@ -792,9 +843,11 @@ public class JSHaven {
 	}
 
 	/**
-	 * Функция ждет завершения движения объекта
-	 * @param gob id объекта
-	 * @param timeout максимальное время ожидания
+	 * Waits for the specified object (Gob) to stop moving.
+	 *
+	 * @param Integer gob - The ID of the object.
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
+	 * @return A {@code Boolean} value. {@code true} if the object stops moving within the timeout period, {@code false} otherwise.
 	 */
 	public static boolean jWaitEndMoveGob(int gob, int timeout) {
 		int curr = 0; if(timeout == 0) timeout = 10000;
@@ -809,18 +862,22 @@ public class JSHaven {
 	}
 
 	/**
-	 * Ждет начало, а затем завершение движения объекта
-	 * @param gob id объекта
-	 * @param timeout максимальное время ожидания
+	 * Waits for the specified object (Gob) to start moving, then waits for it to stop.
+	 *
+	 * @param Integer gob - The ID of the object.
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
 	 */
 	public static void jWaitMoveGob(int gob, int timeout) {
 		if (!jWaitStartMoveGob(gob, timeout)) return;
 		jWaitEndMoveGob(gob, timeout);
 	}
+
 	/**
-	 * Функция ждет появления указанного курсора
-	 * @param name имя курсора
-	 * @param timeout максимальное время ожидания
+	 * Waits for the specified cursor to appear.
+	 *
+	 * @param String name - The name of the cursor.
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
+	 * @return A {@code Boolean} value. {@code true} if the cursor appears within the timeout period, {@code false} otherwise.
 	 */
 	public static boolean jWaitCursor(String name, int timeout) {
 		int curr = 0; if(timeout == 0) timeout = 10000;
@@ -835,9 +892,11 @@ public class JSHaven {
 	}
 
 	/**
-	 * Функция ждет появления указанного окна
-	 * @param name имя ока
-	 * @param timeout максимальное время ожидания
+	 * Waits for the specified window to appear.
+	 *
+	 * @param String name - The name of the window.
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
+	 * @return A {@code Boolean} value. {@code true} if the window appears within the timeout period, {@code false} otherwise.
 	 */
 	public static boolean jWaitWindow(String name, int timeout) {
 		int curr = 0; if(timeout == 0) timeout = 10000;
@@ -856,10 +915,11 @@ public class JSHaven {
 	}
 
 	/**
-	 * Функция ждет появления указанного окна и возвращает его, если оно появилось за время таймаута
-	 * @param name name имя ока
-	 * @param timeout максимальное время ожидания
-	 * @return окно
+	 * Waits for the specified window to appear and returns it if it appears within the timeout period.
+	 *
+	 * @param String name - The name of the window.
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
+	 * @return The {@code JSWindow} object if the window appears, or {@code null} otherwise.
 	 */
 	public static JSWindow jWaitNewWindow(String name, int timeout) {
 		int curr = 0; if(timeout == 0) timeout = 10000;
@@ -881,15 +941,17 @@ public class JSHaven {
 	}
 
 	/**
-	 * Грязный хак, лучше это вызвать в начале скрипта, если будете работать с окнами в скрипте
+	 * Clears the last created window. It is recommended to call this at the beginning of the script if working with windows.
 	 */
 	public static void jDropLastWindow() {
 		JSBotUtils.lastCreatedWindow = null;
 	}
 
 	/**
-	 * Функция ждет начала прогресса
-	 * @param timeout максимальное время ожидания
+	 * Waits for the progress action to start.
+	 *
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
+	 * @return A {@code Boolean} value. {@code true} if progress starts within the timeout period, {@code false} otherwise.
 	 */
 	public static boolean jWaitStartProgress(int timeout) {
 		int curr = 0; if(timeout == 0) timeout = 10000;
@@ -904,8 +966,9 @@ public class JSHaven {
 	}
 
 	/**
-	 * Ждет полный цикл прогресса
-	 * @param timeout максимальное время ожидания
+	 * Waits for a full progress cycle to complete.
+	 *
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
 	 */
 	public static void jWaitProgress(int timeout) {
 		if (!jWaitStartProgress(timeout)) return;
@@ -913,8 +976,10 @@ public class JSHaven {
 	}
 
 	/**
-	 * Функция ждет завершения прогресса
-	 * @param timeout максимальное время ожидания
+	 * Waits for the progress action to end.
+	 *
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
+	 * @return A {@code Boolean} value. {@code true} if progress ends within the timeout period, {@code false} otherwise.
 	 */
 	public static boolean jWaitEndProgress(int timeout) {
 		int curr = 0; if(timeout == 0) timeout = 10000;
@@ -929,8 +994,10 @@ public class JSHaven {
 	}
 
 	/**
-	 * Функция ждет появления вещи на курсоре (ждет пока что-то не возмем в руки)
-	 * @param timeout максимальное время ожидания
+	 * Waits for an item to appear on the cursor (e.g., when something is picked up).
+	 *
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
+	 * @return A {@code Boolean} value. {@code true} if an item appears on the cursor within the timeout period, {@code false} otherwise.
 	 */
 	public static boolean jWaitDrag(int timeout) {
 		int curr = 0; if(timeout == 0) timeout = 10000;
@@ -945,8 +1012,10 @@ public class JSHaven {
 	}
 
 	/**
-	 * Функция ждет исчезновения вещи с курсора (ждет пока что-то не выбросим из рук)
-	 * @param timeout максимальное время ожидания
+	 * Waits for an item to disappear from the cursor (e.g., when something is dropped).
+	 *
+	 * @param Integer timeout - The maximum waiting time in milliseconds.
+	 * @return A {@code Boolean} value. {@code true} if the item is dropped within the timeout period, {@code false} otherwise.
 	 */
 	public static boolean jWaitDrop(int timeout) {
 		int curr = 0; if(timeout == 0) timeout = 10000;
@@ -961,45 +1030,42 @@ public class JSHaven {
 	}
 	
 	/***************************************************************
-	 * Ниже следует пиздец связанный с картой
+	 * Below is map-related functionality
 	 ***************************************************************/
+
 	/**
-	 * Возвращает массив объектов JSGob в указанном радиусе с
-	 * оффсетом от игрока (в тайлах)
+	 * Retrieves an array of {@code JSGob} objects within the specified radius and offset from the player (in tiles).
 	 * 
-	 * @param rad
-	 *            радиус поиска объектов (в точках)
-	 * @param offset
-	 *            оффсет от игрока (в тайлах)
-	 * @param mask
-	 *            перечисление имен необходимых объектов (подстрока ресурса,
-	 *            "!" в начале исключает объект из поиска)
-	 * @return массив идентификаторов
+	 * @param Integer rad - The search radius (in tiles).
+	 * @param jCoord offset - The offset from the player (in tiles).
+	 * @param String[] mask - The enumeration of required object names (substring of resource; 
+	 *                      "!" at the beginning excludes the object from the search).
+	 * @return A {@code JSGob[]} array of objects.
 	 */
 	public static JSGob[] jGetObjects(int rad, Object offset, Object mask) {
 		return JSBotUtils.objectIdList(rad, unWrapCoord(offset), unWrapStringArray(mask));
 	}
 	
 	/**
-	 * Возвращает массив объектов JSGob с указанным именем, BLOB'ом и в указанном прямоугольнике.
-	 * @param abscrd абсолютные координаты начала (северо-западный угол) прямоугольника
-	 * @param size размер прямоугольника
-	 * @param blob BLOB объекта
-	 * @param mask перечисление имен необходимых объектов (подстрока ресурса,
-	 * "!" в начале исключает объект из поиска)
-	 * @return массив идентификаторов
+	 * Retrieves an array of {@code JSGob} objects with the specified name, BLOB, and within the specified rectangle.
+	 * 
+	 * @param jCoord absPos - Absolute coordinates of the rectangle's starting point (northwest corner).
+	 * @param jCoord size - The size of the rectangle.
+	 * @param Integer blob - The BLOB of the object.
+	 * @param String[] mask - The enumeration of required object names (substring of resource;
+	 *                      "!" at the beginning excludes the object from the search).
+	 * @return A {@code JSGob[]} array of objects.
 	 */
-	public static JSGob[] jGetObjectsInRect(Object abscrd, Object size, int blob, Object mask) {
-		return JSBotUtils.getObjectsInRect(unWrapCoord(abscrd), unWrapCoord(size), blob,
+	public static JSGob[] jGetObjectsInRect(Object absPos, Object size, int blob, Object mask) {
+		return JSBotUtils.getObjectsInRect(unWrapCoord(absPos), unWrapCoord(size), blob,
 				unWrapStringArray(mask));
 	}
 
 	/**
-	 * Возвращает тип тайла в оффсете от игрока (в тайлах)
+	 * Retrieves the tile type at the specified offset from the player (in tiles).
 	 * 
-	 * @param offset
-	 *            оффсет в тайлах
-	 * @return тип тайла, -1 если не удалось получить тип тайла
+	 * @param jCoord offset - The offset from the player (in tiles).
+	 * @return An {@code Integer} representing the tile type, or {@code -1} if unable to get the tile type.
 	 */
 	public static int jGetTileType(Object offset) {
 		Coord c = unWrapCoord(offset);
@@ -1007,171 +1073,139 @@ public class JSHaven {
 	}
 	
 	/**
-	 * Возвращает тип тайла по абсолютным координатам
-	 * @param absCoord абсолютные координаты
-	 * @return тип тайла
+	 * Retrieves the tile type at the specified absolute coordinates.
+	 * 
+	 * @param jCoord absPos - The absolute coordinates.
+	 * @return An {@code Integer} representing the tile type.
 	 */
-	public static int jAbsTileType(Object absCoord) {
-		Coord c = unWrapCoord(absCoord);
+	public static int jAbsTileType(Object absPos) {
+		Coord c = unWrapCoord(absPos);
 		return JSBotUtils.absTileType(c.x, c.y);
 	}
 
 	/**
-	 * Отправляет на сервер щелчек мыши по объекту
+	 * Sends a mouse click event to the server for the specified object.
 	 * 
-	 * @param objid
-	 *            идентификатор объекта
-	 * @param btn
-	 *            кнопка мыши (1 - левая, 3 - правая)
-	 * @param mod
-	 *            модификатор клавиатуры (1 - shift; 2 - ctrl; 4 - alt; 8 -
-	 *            win)
+	 * @param Integer objid - The object identifier.
+	 * @param Integer btn - The mouse button (1 for left, 3 for right).
+	 * @param Integer mod - The keyboard modifier (1 for SHIFT, 2 for CTRL, 4 for ALT, 8 for WIN).
 	 */
 	public static void jDoClick(int objid, int btn, int mod) {
 		JSBotUtils.doClick(objid, btn, mod);
 	}
 
 	/**
-	 * Двигаться на PF к указанной точке, координаты задавать абсолютные
+	 * Moves towards the specified point using pathfinding (PF). Coordinates should be absolute.
 	 * 
-	 * @param point
-	 *            координаты точки назначения
-	 * @return количество кусков пути. 0, если путь не найден
-	 */
-	public static int jPFMove(Object point) {
-		return UI.instance.mapview.map_pf_move(unWrapCoord(point));
+	 * @param jCoord pos - The coordinates of the destination point.
+	 * @return An {@code Integer} value representing the number of path segments. Returns {@code 0} if the path is not found.
+	 */		
+	public static int jPFMove(Object pos) {
+		return UI.instance.mapview.map_pf_move(unWrapCoord(pos));
 	}
 
 	/**
-	 * Кликнуть по объекту правой кнопкой мыши, используя PF
+	 * Moves toward the specified object using pathfinding (PF) and right-clicks on the it.
 	 * 
-	 * @param id
-	 *            идентификатор объекта
+	 * @param int id - The object identifier.
+	 * @return An {@code Integer} value representing the number of path segments. Return
 	 */
 	public static int jPFClick(int id) {
 		return UI.instance.mapview.map_pf_interact(id);
 	}
 
 	/**
-	 * Отправляет на сервер щелчек по карте в указанные координаты
-	 * относительно игрока (в тайлах)
+	 * Sends a click event to the map at the specified coordinates relative to the player (in tiles).
 	 * 
-	 * @param coord
-	 *            координаты
-	 * @param btn
-	 *            кнопка мыши (1 - левая, 3 - правая)
-	 * @param mod
-	 *            модификатор клавиатуры (1 - shift; 2 - ctrl; 4 - alt; 8 -
-	 *            win)
+	 * @param jCoord pos - The coordinates.
+	 * @param Integer btn - The mouse button (1 for left, 3 for right).
+	 * @param Integer mod - The keyboard modifier (1 for SHIFT, 2 for CTRL, 4 for ALT, 8 for WIN).
 	 */
-	public static void jOffsetClick(Object coord, int btn, int mod) {
-		Coord c = unWrapCoord(coord);
+	public static void jOffsetClick(Object pos, int btn, int mod) {
+		Coord c = unWrapCoord(pos);
 		JSBotUtils.mapClick(c.x, c.y, btn, mod);
 	}
 
 	/**
-	 * Отправляет на сервер щелчек по карте в указанные координаты
-	 * (абсолютные, в точках карты)
+	 * Sends a click event to the map at the specified absolute coordinates.
 	 * 
-	 * @param coord
-	 *            координаты
-	 * @param btn
-	 *            кнопка мыши (1 - левая, 3 - правая)
-	 * @param mod
-	 *            модификатор клавиатуры (1 - shift; 2 - ctrl; 4 - alt; 8 -
-	 *            win)
+	 * @param jCoord pos - The coordinates.
+	 * @param Integer btn - The mouse button (1 for left, 3 for right).
+	 * @param Integer mod - The keyboard modifier (1 for SHIFT, 2 for CTRL, 4 for ALT, 8 for WIN).
 	 */
-	public static void jAbsClick(Object coord, int btn, int mod) {
-		Coord c = unWrapCoord(coord);
+	public static void jAbsClick(Object pos, int btn, int mod) {
+		Coord c = unWrapCoord(pos);
 		JSBotUtils.mapAbsClick(c.x, c.y, btn, mod);
 	}
 
 	/**
-	 * Передвигается на указанное количество тайлов относительно игрока
+	 * Moves the player by the specified number of tiles relative to their current position.
 	 * 
-	 * @param coord
-	 *            координаты передвижения
+	 * @param jCoord pos - The movement coordinates.
 	 */
-	public static void jMoveStep(Object coord) {
-		Coord c = unWrapCoord(coord);
+	public static void jMoveStep(Object pos) {
+		Coord c = unWrapCoord(pos);
 		JSBotUtils.mapMoveStep(c.x, c.y);
 	}
 
 	/**
-	 * Возвращает координаты игрока
+	 * Returns the player's coordinates.
 	 * 
-	 * @return координаты игрока
+	 * @return A {@code jCoord} containing the player's coordinates.
 	 */
 	public static Coord jMyCoords() {
 		return JSBotUtils.MyCoord();
 	}
 
 	/**
-	 * Взаимодествие предмета в руках (на курсоре) с точкой на карте (в
-	 * тайлах) относительно игрока
+	 * Interacts with a point on the map (in tiles) relative to the player using an item held in hand (on cursor).
 	 * 
-	 * @param coord
-	 *            координаты оффсета
-	 * @param mod
-	 *            модификатор клавиатуры (1 - shift; 2 - ctrl; 4 - alt; 8 -
-	 *            win)
+	 * @param jCoord pos - The offset coordinates.
+	 * @param Integer mod - The keyboard modifier (1 for SHIFT, 2 for CTRL, 4 for ALT, 8 for WIN).
 	 */
-	public static void jInteractClick(Object coord, int mod) {
-		Coord c = unWrapCoord(coord);
+	public static void jInteractClick(Object pos, int mod) {
+		Coord c = unWrapCoord(pos);
 		JSBotUtils.mapInteractClick(c.x, c.y, mod);
 	}
 
 	/**
-	 * Взаимодествие предмета в руках с точкой на карте (абсолютные, в
-	 * точках карты)
+	 * Interacts with a point on the map (in absolute coordinates) using an item held in hand.
 	 * 
-	 * @param coord
-	 *            абсолютные координаты
-	 * @param mod
-	 *            модификатор клавиатуры (1 - shift; 2 - ctrl; 4 - alt; 8 -
-	 *            win)
+	 * @param jCoord pos - The absolute coordinates.
+	 * @param Integer mod - The keyboard modifier (1 for SHIFT, 2 for CTRL, 4 for ALT, 8 for WIN).
 	 */
-	public static void jAbsInteractClick(Object coord, int mod) {
-		Coord c = unWrapCoord(coord);
+	public static void jAbsInteractClick(Object pos, int mod) {
+		Coord c = unWrapCoord(pos);
 		JSBotUtils.mapAbsInteractClick(c.x, c.y, mod);
 	}
 
 	/**
-	 * Поставить объект который хотим построить в указанные координаты (в
-	 * тайлах) относительно игрока
+	 * Places the object being built at the specified coordinates (in tiles) relative to the player.
 	 * 
-	 * @param coord
-	 *            координаты оффсета от игрока
-	 * @param btn
-	 *            кнопка мыши (1 - левая, 3 - правая)
-	 * @param mod
-	 *            модификатор клавиатуры (1 - shift; 2 - ctrl; 4 - alt; 8 -
-	 *            win)
+	 * @param jCoord pos - The offset coordinates from the player.
+	 * @param Integer btn - The mouse button (1 for left, 3 for right).
+	 * @param Integer mod - The keyboard modifier (1 for SHIFT, 2 for CTRL, 4 for ALT, 8 for WIN).
 	 */
-	public static void jPlace(Object coord, int btn, int mod) {
-		Coord c = unWrapCoord(coord);
+	public static void jPlace(Object pos, int btn, int mod) {
+		Coord c = unWrapCoord(pos);
 		JSBotUtils.mapPlace(c.x, c.y, btn, mod);
 	}
 
 	/**
-	 * Проверяет можно ли дойти до указанной точки напрямую
+	 * Checks if the path to the specified point is free of obstacles.
 	 * 
-	 * @param rc
-	 *            Абсолютные координаты точки
-	 * @return true если можно пройти напрямую
+	 * @param jCoord pos - The absolute coordinates of the point.
+	 * @return A {@code Boolean} value. {@code true} if the path is clear, {@code false} otherwise.
 	 */
-	public static boolean jIsPathFree(Object rc) {
-		return APXUtils.isPathFree(unWrapCoord(rc));
+	public static boolean jIsPathFree(Object pos) {
+		return APXUtils.isPathFree(unWrapCoord(pos));
 	}
 
 	/**
-	 * 'Просит' игрока выбрать объект мышкой, пользователь должен щелкнуть
-	 * на любой объект, тогда управление вернется в скрипт. По сути скрипт
-	 * не продолжит выполнение, пока пользователь не выберет объект.
+	 * Prompts the player to select an object with the mouse. The script will pause until an object is selected.
 	 * 
-	 * @param text
-	 *            сообщение в игре (как в inGamePrint объекта JSHaven)
-	 * @return объект JSGob или null
+	 * @param String text - The in-game message to be displayed.
+	 * @return A {@code JSGob} object representing the selected object, or {@code null} if no object is selected.
 	 */
 	public static JSGob jSelectObject(String text) {
 		if (UI.instance.mapview == null)
@@ -1188,67 +1222,57 @@ public class JSHaven {
 	}
 
 	/**
-	 * Возвращает объект JSGob или null с указанным именем ресурса в
-	 * указанном радиусе (тайлы) от игрока
+	 * Retrieves a {@code JSGob} object with the specified resource name within the specified radius (in tiles) from the player.
 	 * 
-	 * @param name
-	 *            имя ресурса
-	 * @param rad
-	 *            радиус от игрока (в тайлах)
-	 * @return объект JSGob или null
+	 * @param String name - The resource name.
+	 * @param Integer rad - The radius from the player (in tiles).
+	 * @return A {@code JSGob} object, or {@code null} if none is found.
 	 */
 	public static JSGob jFindObjectByName(String name, int rad) {
 		return JSBotUtils.findObjectByName(name, rad);
 	}
 
 	/**
-	 * Находит объект JSGob в указанном радиусе с оффсетом от игрока
+	 * Finds a {@code JSGob} object within the specified radius and offset from the player.
 	 * 
-	 * @param name
-	 *            имя ресурса
-	 * @param rad
-	 *            радиус поиска (в точках карты)
-	 * @param coord
-	 *            координаты оффсета от игрока
-	 * @return ближайший объект JSGob или null
+	 * @param String name - The resource name.
+	 * @param Integer rad - The search radius (in map points).
+	 * @param jCoord pos - The offset coordinates from the player.
+	 * @return The nearest {@code JSGob} object, or {@code null} if none is found.
 	 */
-	public static JSGob jFindObjectWithOffset(String name, int rad, Object coord) {
-		Coord c = unWrapCoord(coord);
+	public static JSGob jFindObjectWithOffset(String name, int rad, Object pos) {
+		Coord c = unWrapCoord(pos);
 		return JSBotUtils.findMapObject(name, rad, c.x, c.y);
 	}
 
 	/**
-	 * Возвращает координаты 'центрирования' по тайлу
+	 * Retrieves the 'centered' tile coordinates based on the provided coordinates.
 	 * 
-	 * @param coord
-	 *            передаваемые координаты
-	 * @return 'центрированный тайл'
+	 * @param jCoord pos - The input coordinates.
+	 * @return A {@code jCoord} containing the centered tile coordinates.
 	 */
-	public static Coord jTilify(Object coord) {
-		Coord c = unWrapCoord(coord);
+	public static Coord jTilify(Object pos) {
+		Coord c = unWrapCoord(pos);
 		return JSBotUtils.tilify(c);
 	}
 	
 	/**
-	 * Возвращает абсолютные координаты ближайшего тайла с указанным типом
-	 * @param raduis радиус поиска в тайлах
-	 * @param type тип тайла
-	 * @return абсолютные координаты тайла
+	 * Retrieves the absolute coordinates of the nearest tile with the specified type.
+	 * 
+	 * @param Integer radius - The search radius (in tiles).
+	 * @param Integer type - The tile type.
+	 * @return A {@code jCoord} containing the absolute coordinates of the tile.
 	 */
 	public static Coord jGetNearestTileAbs(int raduis, int type) {
 		return jMyCoords().add(jGetNearestTileCoord(raduis, type).mul(11));
 	}
 	
 	/**
-	 * Возвращает координаты оффсета в тайлах ближайшего тайла с указанным
-	 * типом
+	 * Retrieves the coordinates of the nearest tile with the specified type, offset from the player.
 	 * 
-	 * @param raduis
-	 *            радиус поиска тайла (в тайлах)
-	 * @param type
-	 *            тип тайла
-	 * @return координаты оффсета от игрока в тайлах (P.S.: масло масло
-	 *         масло.)
+	 * @param Integer radius - The search radius (in tiles).
+	 * @param Integer type - The tile type.
+	 * @return A {@code jCoord} containing the offset coordinates from the player, or {@code null} if no matching tile is found.
 	 */
 	public static Coord jGetNearestTileCoord(int raduis, int type) {
 		double maxRealRad = 100000;
@@ -1259,14 +1283,7 @@ public class JSHaven {
 				x = i - step;
 				y = i;
 				if (JSBotUtils.tileType(x, y) == type) {
-					double realRad = Math.sqrt(x * x + y * y); // чтобы ты
-																// сдох со
-																// своей
-																// явой, Арх
-																// NOOOOO
-																// Kerri я
-																// нихотеть
-																// -_-
+					double realRad = Math.sqrt(x * x + y * y);
 					if (realRad < maxRealRad) {
 						maxRealRad = realRad;
 						ret = new Coord(x, y);
@@ -1313,56 +1330,61 @@ public class JSHaven {
 	}
 	
 	/**
-	 * Рисует прямоугольную область на земле. Штука чисто визуальная.
-	 * Чтобы отключить рисование области, вызовите данную функцию, передав нулевые значения в размере.
-	 * @param offset Оффсет в тайлах от игрока.
-	 * @param size Размеры прямоугольника.
+	 * Draws a rectangular area on the ground. Purely a visual feature.
+	 * To disable the area drawing, call this function with zero values for size.
+	 * 
+	 * @param jCoord offset - The offset from the player (in tiles).
+	 * @param jCoord size - The size of the rectangle.
 	 */
 	public static void jDrawGroundRect(Object offset, Object size) {
 		JSBotUtils.drawGroundRect(unWrapCoord(offset), unWrapCoord(size));
 	}
 	
 	/**
-	 * Создает окно
-	 * @param position Позиция окна относительно экрана (в пикселях)
-	 * @param size Размер экрана (в пикселях)
-	 * @param caption Заголовок
-	 * @return Указатель на окно
+	 * Creates a window.
+	 * 
+	 * @param jCoord position - The position of the window relative to the screen (in pixels).
+	 * @param jCoord size - The size of the window (in pixels).
+	 * @param String caption - The title of the window.
+	 * @return A {@code JSGUI_Window} representing the window created.
 	 */
 	public static JSGUI_Window jGUIWindow(Object position, Object size, String caption) {
 		return JSGUI.createWindow(unWrapCoord(position), unWrapCoord(size), caption);
 	}
 	
 	/**
-	 * Создает текстовую метку
-	 * @param parent Родительский элемент (окно)
-	 * @param position Позиция внутри родителя (в пикселях)
-	 * @param text Текст
-	 * @return Указатель на метку
+	 * Creates a text label.
+	 * 
+	 * @param JSGUI_Window parent - The parent element (window).
+	 * @param jCoord position - The position within the parent (in pixels).
+	 * @param String text - The text for the label.
+	 * @return A {@code JSGUI_Label} representing the label created.
 	 */
 	public static JSGUI_Label jGUILabel(Object parent, Object position, String text) {
 		return JSGUI.createLabel(JSGUI.unWrapGUI_Widget(parent), unWrapCoord(position), text);
 	}
 	
 	/**
-	 * Создает кнопку
-	 * @param parent Родительский элемент (окно)
-	 * @param position Позиция внутри родителя (в пикселях)
-	 * @param size Ширина кнопки (в пикселях)
-	 * @param caption Текст в кнопке
-	 * @return Указатель на кнопку
+	 * Creates a button.
+	 * 
+	 * @param JSGUI_Window parent - The parent element (window).
+	 * @param jCoord position - The position within the parent (in pixels).
+	 * @param Integer size - The width of the button (in pixels).
+	 * @param String caption - The text in the button.
+	 * @return A {@code JSGUI_Button} representing the button created.
 	 */
 	public static JSGUI_Button jGUIButton(Object parent, Object position, int size, String caption) {
 		return JSGUI.createButton(JSGUI.unWrapGUI_Widget(parent), unWrapCoord(position), size, caption);
 	}
 	
 	/**
-	 * Создает поле ввода
-	 * @param parent Родительский элемент (окно)
-	 * @param position Позиция внутри родителя (в пикселях)
-	 * @param size Размер поля ввода (в пикселях)
-	 * @param deftext Текст в поле ввода по умолчанию
-	 * @return Указатель на поле ввода
+	 * Creates a text entry field.
+	 * 
+	 * @param JSGUI_Window parent - The parent element (window).
+	 * @param jCoord position - The position within the parent (in pixels).
+	 * @param jCoord size - The size of the entry field (in pixels).
+	 * @param String deftext - The default text in the entry field.
+	 * @return A {@code JSGUI_TextEntry} representing the text entry field created.
 	 */
 	public static JSGUI_TextEntry jGUIEntry(Object parent, Object position, Object size, String deftext) {
 		return JSGUI.createEntry(JSGUI.unWrapGUI_Widget(parent), unWrapCoord(position),
@@ -1370,134 +1392,146 @@ public class JSHaven {
 	}
 	
 	/**
-	 * Создает чекбокс
-	 * @param parent Родительский элемент (окно)
-	 * @param position Позиция внутри родителя (в пикселях)
-	 * @param text Текст чекбокса
-	 * @return Указатель на чекбокс
+	 * Creates a checkbox.
+	 * 
+	 * @param JSGUI_Window parent - The parent element (window).
+	 * @param jCoord position - The position within the parent (in pixels).
+	 * @param String text - The text for the checkbox.
+	 * @return A {@code JSGUI_CheckBox} representing the checkbox created.
 	 */
 	public static JSGUI_CheckBox jGUICbox(Object parent, Object position, String text) {
 		return JSGUI.createBox(JSGUI.unWrapGUI_Widget(parent), unWrapCoord(position), text);
 	}
 	
 	
-	// Конец гуя!
-	
 	/**
-	 * Функция для работы с "инветарями" лодок/картов/вагонов, возвращает ресурс объекта из такого инвентаря
-	 * @param window имя окна
-	 * @param pos позиция в окне (как они приходят с сервера - хз, возможно что слева направа и сверху вниз)
-	 * @return полное имя ресурса
+	 * Retrieves the resource name of the object from a container inventory (e.g., boats, carts).
+	 * 
+	 * @param String window - The name of the window.
+	 * @param Integer pos - The position in the window.
+	 * @return A {@code String} value containing the full resource name of the object.
 	 */
 	public static String jImgName(String window, int pos) {
 		return JSBotUtils.getWindowImg(window, pos);
 	}
 	
 	/**
-	 * Возвращает общее количество слотов в лодках/...
-	 * @param window имя окна
-	 * @return количество слотов
+	 * Retrieves the total number of slots in a container (e.g., boats, carts).
+	 * 
+	 * @param String window - The name of the window.
+	 * @return An {@code Integer} value representing the total number of slots.
 	 */
 	public static int jImgSlotsCount(String window) {
 		return JSBotUtils.windowImgs(window, true);
 	}
 	
 	/**
-	 * Возвращает количество пустых слотов в лодках/...
-	 * @param window имя окна
-	 * @return количество пустых слотов
+	 * Retrieves the number of empty slots in a container (e.g., boats, carts).
+	 * 
+	 * @param String window - The name of the window.
+	 * @return An {@code Integer} value representing the number of empty slots.
 	 */
 	public static int jImgFreeSlots(String window) {
 		return (JSBotUtils.windowImgs(window, true) - JSBotUtils.windowImgs(window, false));
 	}
 	
 	/**
-	 * Посылает клик в окне лодки/... в указанный слот с заданным идентификатором
-	 * @param window имя окна
-	 * @param pos позиция
-	 * @param btn кнопка мыши
-	 * @param mod модификатор клавиатуры
+	 * Sends a click to the specified slot in the container window.
+	 * 
+	 * @param String window - The name of the window.
+	 * @param Integer pos - The position.
+	 * @param Integer btn - The mouse button (1 for left, 3 for right).
+	 * @param Integer mod - The keyboard modifier (1 for SHIFT, 2 for CTRL, 4 for ALT, 8 for WIN).
 	 */
 	public static void jImgClick(String window, int pos, int btn, int mod) {
 		JSBotUtils.imgClick(window, pos, btn, mod);
 	}
 	
 	/**
-	 * Установить строчку в поле для ХСа
-	 * @param hs Строка ХСа
+	 * Sets the hearth secret string in the kin window.
+	 * 
+	 * @param String hs - The Hearth Secret (HS) string.
 	 */
 	public static void jBuddySetHS(String hs) {
 		BuddyWnd.instance.setHSText(hs);
 	}
 	
 	/**
-	 * Возвращает имя текущего выделенного кина 
-	 * @return имя кина
+	 * Retrieves the name of the currently selected kin.
+	 * 
+	 * @return A {@code String} containing the name of the kin.
 	 */
 	public static String jBuddyDumpCurrentName() {
 		return BuddyWnd.instance.dumpCurrentSelectedName();
 	}
 	
 	/**
-	 * Возвращает информацию об одежде для текущего кина
-	 * @return Текст с одеждой для данного кина
+	 * Retrieves information about the clothing for the currently selected kin.
+	 * 
+	 * @return A {@code String} containing the clothing information for the kin.
 	 */
 	public static String jBuddyDumpCurrentInfo() {
 		return BuddyWnd.instance.dumpCurrentSelectedInfo();
 	}
 	
 	/**
-	 * Проверяет, изменилась ли информация в кинах (в случае изменения флаг сбрасывается)
-	 * @return true - если информация изменилась
+	 * Checks if the information about the kins have changed (the flag resets if it has).
+	 * 
+	 * @return A {@code Boolean} value. {@code true} if the information has changed, otherwise {@code false}.
 	 */
 	public static boolean jBuddyInfoChanged() {
 		return BuddyWnd.instance.buddyInfoChanged();
 	}
 	
 	/**
-	 * Забыть выделенного кина
+	 * Forgets the currently selected kin.
 	 */
 	public static void jBuddyForgetCurrent() {
 		BuddyWnd.instance.forgetCur();
 	}
 	
 	/**
-	 * Переключает режим показа предупреждений для устаревших функций
-	 * @param show Отключает предупреждения для false
+	 * Toggles the display of warnings for deprecated functions.
+	 * 
+	 * @param Boolean show - {@code false} disables the warnings, {@code true} enables them.
 	 */
 	public static void jShowWarnings(boolean show) {
 		JSBotUtils.sWarnings = show;
 	}
 	
 	/**
-	 * Возвращает массив кинов из кинлиста
-	 * @return Массив кинов
+	 * Retrieves an array of all of the kins from the kin list.
+	 * 
+	 * @return A {@code String[]} array containing the list of kins.
 	 */
 	public static String[] jBuddyList() {
 		return BuddyWnd.instance.allBuddies();
 	}
 	
 	/**
-	 * Возвращает JSGob по его идентификатору (врап для устаревших функций)
-	 * @param gob ID объекта
-	 * @return JSGob для этого объекта
+	 * Retrieves the JSGob object by its identifier (wrapper for deprecated functions).
+	 * 
+	 * @param Integer gob - The object ID.
+	 * @return A {@code JSGob} representing the object with the specified ID.
 	 */
 	public static JSGob jGob(int gob) {
 		return new JSGob(gob);
 	}
 	
 	/**
-	 * Показывает состоит ли игрок в пати с другими игроками
-	 * @return true - если состоит в пати
+	 * Checks if the player is in a party with others.
+	 * 
+	 * @return A {@code Boolean} value. {@code true} if the player is in a party, otherwise {@code false}.
 	 */
 	public static boolean jHaveParty() {
 		return JSBotUtils.haveParty();
 	}
 	
 	/**
-	 * Отправляет клик по портрету в пати
-	 * @param index Порядковый номер портрета
-	 * @param btn Кнопка
+	 * Sends a click to a party portrait.
+	 * 
+	 * @param Integer index - The index of the portrait.
+	 * @param Integer btn - The mouse button.
 	 */
 	public static void jPartyClick(int index, int btn) {
 		if (Partyview.instace != null) {
@@ -1505,6 +1539,12 @@ public class JSHaven {
 		}
 	}
 	
+	/**
+	 * Checks if the player has aggroed an entity by its ID.
+	 * 
+	 * @param Integer id - The ID of the entity.
+	 * @return A {@code Boolean} value. {@code true} if the entity is aggroed, otherwise {@code false}.
+	 */
 	public static boolean jYouAggroedId(int id) {
 		if (UI.instance.fight != null) {
 			return UI.instance.fight.haveID(id);
@@ -1513,26 +1553,28 @@ public class JSHaven {
 	}
 	
 	/**
-	 * Возвращает версию клиента
-	 * @return версия клиента
+	 * Retrieves the client version.
+	 * 
+	 * @return A {@code String} containing the client version.
 	 */
 	public static String jGetVersion() {
-		return MainFrame.hhVersion;
+		return MainFrame.clientVersion;
 	}
 	
 	/**
-	 * Возвращает объект в указанном радиусе от абсолютных координат
-	 * @param coord абсолютные координаты
-	 * @param radius радиус поиска объекта от абсолютных координат (в точках)
-	 * @param name имя объекта
-	 * @return
+	 * Finds a map object matching the name near the given absolute coordinates within the specified radius.
+	 * 
+	 * @param jCoord coord - The absolute coordinates.
+	 * @param Integer radius - The search radius (in pixels).
+	 * @param String name - The name of the object.
+	 * @return A {@code JSGob} object representing the found map object.
 	 */
 	public static JSGob jFindMapObjectNearAbs(Object coord, int radius, String name) {
 		return JSBotUtils.findMapObjectAbs(name, radius, unWrapCoord(coord));
 	}
 	
 	/**
-	 * Выходит из пати, если оно было
+	 * Leaves the party if one exists.
 	 */
 	public static void jLeaveParty() {
 		if (jHaveParty())
@@ -1540,15 +1582,16 @@ public class JSHaven {
 	}
 	
 	/**
-	 * Предлагает пользователю выбрать область на карте мышью (как линейка по ctrl+l)
-	 * При подтверждении выбора функция возвращает массив из четырех координат:
-	 * 1 - Абсолютные координаты левого верхнего угла области
-	 * 2 - Абсолютные координаты правого нижнего угла области
-	 * 3 - Оффсет от игрока в тайлах (до левого верхнего угла)
-	 * 4 - Размер области в тайлах
-	 * В случае отмены массив в себе будет содержать 4 null'а.
-	 * @param wndpos - координаты позоции окна на экране
-	 * @return массив координат
+	 * Prompts the user to select an area on the map with the mouse (like the ruler with [CTRL + L] ).
+	 * Returns an array of four coordinates:
+	 * 1 - Absolute coordinates of the top-left corner of the area.
+	 * 2 - Absolute coordinates of the bottom-right corner of the area.
+	 * 3 - Offset from the player in tiles (to the top-left corner).
+	 * 4 - Size of the area in tiles.
+	 * If canceled, the array contains four {@code null} values.
+	 * 
+	 * @param jCoord wndpos - Coordinates of the window's position on the screen.
+	 * @return A {@code Coord[]} array containing the selected area coordinates.
 	 */
 	public static Coord[] jAreaSelector(Object wndpos) {
 		Coord[] ret = new Coord[4];
@@ -1559,58 +1602,62 @@ public class JSHaven {
 	}
 	
 	/**
-	 * Возвращает набор фепов в феп полоске
-	 * @return массив фепов (возможные значения: "str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy")
+	 * Retrieves the current list of FEPs (Food Event Points) in the FEP bar.
+	 * 
+	 * @return A {@code String[]} array containing the FEPs (possible values: "str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy").
 	 */
 	public static String[] jGetFepCurrentList() {
 		return JSBotUtils.getFepList();
 	}
 	
 	/**
-	 * Возвращает значение указанного фепа в феп полоске
-	 * @param fepName имя фепа в феп полоске (доступные значения: "str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy")
-	 * @return значение фепа, либо 0
+	 * Retrieves the value of the specified FEP in the FEP bar.
+	 * 
+	 * @param String fepName - The name of the FEP in the FEP bar (possible values: "str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy").
+	 * @return A {@code Double} value of the specified FEP, or {@code 0} if not found.
 	 */
 	public static double jGetFepCurrentAmount(String fepName) {
 		return JSBotUtils.getFepByName(fepName);
 	}
 	
 	/**
-	 * Возвращает текущий кап фепа, то есть максимум феп полоски
-	 * @return кап феп полоски
+	 * Retrieves the current cap (maximum value) of the FEP bar (After food).
+	 * 
+	 * @return A {@code Double} value representing the FEP bar cap.
 	 */
 	public static double jGetFepCurrentCap() {
 		return JSBotUtils.getCurrentFepCap();
 	}
 	
 	/**
-	 * Возвращает максимальное значение фепа
-	 * @return максфеп
+	 * Retrieves the maximum value of the FEP bar (Before any food).
+	 * 
+	 * @return The maximum FEP value.
 	 */
 	public static int jGetFepMaxValue() {
 		return JSBotUtils.getMaxStatValue();
 	}
 	
 	/**
-	 * Возвращает имя стата с максимальным фепом
-	 * @return имя стата (возможные значения: "str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy")
+	 * Retrieves the name of the stat with the highest FEP value.
+	 * 
+	 * @return A {@code String} representing the name of the stat with highest FEP value. (possible values: "str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy").
 	 */
 	public static String jGetFepMaxName() {
 		return JSBotUtils.getMaxStatName();
 	}
 	
 	/**
-	 * Возващает базовое значения стата (без баффов) по его имени
-	 * @param name
-	 * Возможные значения:
-	 * ФЕПы: "str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy"
-	 * Скиллы: "unarmed", "melee", "ranged", "explore", "stealth", "sewing", "smithing", "carpentry", "cooking", "farming", "survive"
-	 * Белифсы: "life", "night", "civil", "nature", "martial", "change"
-	 * ЛА: "expmod"
-	 * @return текущее значение стата, либо 0
+	 * Returns the base value (without buffs) of the specified stat.
+	 * 
+	 * @param String name - The name of the stat. Possible values:
+	 * FEPs: "str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy"
+	 * Skills: "unarmed", "melee", "ranged", "explore", "stealth", "sewing", "smithing", "carpentry", "cooking", "farming", "survive"
+	 * Beliefs: "life", "night", "civil", "nature", "martial", "change"
+	 * LA: "expmod"
+	 * @return An {@code Integer} representing the current value of the stat, or {@code 0} if not found.
 	 */
 	public static int jGetStatByName(String name) {
 		return JSBotUtils.getStat(name);
 	}
-	
-}//Static haven
+}

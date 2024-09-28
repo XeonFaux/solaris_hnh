@@ -9,9 +9,9 @@ public class JSEquip {
 	}
 
 	/**
-	 * Возвращает количество пустых слотов эквипа
-	 * 
-	 * @return количество пустых слотов
+	 * Retrieves the number of empty equipment slots.
+	 *
+	 * @return An {@code Integer} value of the count of empty slots in the equipment.
 	 */
 	public int emptyCount() {
 		int count = 0;
@@ -24,11 +24,10 @@ public class JSEquip {
 	}
 
 	/**
-	 * Возвращает качество вещи в указанном слоте эквипа
-	 * 
-	 * @param slot
-	 *            номер слота
-	 * @return качество вещи
+	 * Retrieves the quality of the item in the specified equipment slot.
+	 *
+	 * @param Integer slot - The index of the equipment slot (0 to 15).
+	 * @return An {@code Integer} value of the quality of the item, or {@code -1} if the slot is empty or invalid.
 	 */
 	public int quality(int slot) {
 		if (slot < 0)
@@ -43,11 +42,10 @@ public class JSEquip {
 	}
 
 	/**
-	 * Возвращает полное имя ресурса
-	 * 
-	 * @param slot
-	 *            слот эквипа
-	 * @return имя ресурса
+	 * Retrieves the full resource name of the item in the specified equipment slot.
+	 *
+	 * @param Integer slot - The index of the equipment slot (0 to 15).
+	 * @return A {@code String} containing the resource name of the item, or an empty {@code String} if the slot is empty or invalid.
 	 */
 	public String resName(int slot) {
 		if (slot < 0)
@@ -62,11 +60,10 @@ public class JSEquip {
 	}
 
 	/**
-	 * Возвращает имя вещи эквипа
-	 * 
-	 * @param slot
-	 *            слот эквипа
-	 * @return имя вещи (как в подсказке, без качества)
+	 * Retrieves the name of the item in the specified equipment slot.
+	 *
+	 * @param Integer slot - The index of the equipment slot (0 to 15).
+	 * @return A {@code String} containing the name of the item (as in tooltip, without quality), or an empty {@code String} if the slot is empty or invalid.
 	 */
 	public String name(int slot) {
 		if (slot < 0)
@@ -81,10 +78,9 @@ public class JSEquip {
 	}
 
 	/**
-	 * Бросить вещь в указанный слот
-	 * 
-	 * @param slot
-	 *            слот, в который нужно бросить вещь
+	 * Drops an item from the player's hands (cursor held object) into the specified equipment slot.
+	 *
+	 * @param Integer slot - The index of the slot to drop the item into (0 to 15).
 	 */
 	public void dropTo(int slot) {
 		if (slot < 0)
@@ -100,40 +96,36 @@ public class JSEquip {
 	}
 
 	/**
-	 * Взять вещь из указанного слота
-	 * 
-	 * @param slot
-	 *            номер слота
+	 * Takes an item from the specified equipment slot, transferring it to the player's hands (cursor held object).
+	 *
+	 * @param Integer slot - The index of the equipment slot (0 to 15).
 	 */
 	public void takeAt(int slot) {
 		itemAction(slot, "take");
 	}
 
 	/**
-	 * Взаимодействие вещи на курсоре с вещью эквипа
-	 * 
-	 * @param slot
-	 *            слот вещи, с которой хотим взаимодействовать
+	 * Interacts with the item in the specified equipment slot using the item in the player's hands (cursor held object).
+	 *
+	 * @param Integer slot - The index of the equipment slot (0 to 15).
 	 */
 	public void itemact(int slot) {
 		itemAction(slot, "itemact");
 	}
 
 	/**
-	 * Переместить вещь из эквипа в активный инвентарь
-	 * 
-	 * @param slot
-	 *            номер слота
+	 * Transfers an item from the equipment to the active inventory.
+	 *
+	 * @param Integer slot - The index of the equipment slot (0 to 15).
 	 */
 	public void transfer(int slot) {
 		itemAction(slot, "transfer");
 	}
 
 	/**
-	 * Вызвать контекстное меню вещи
-	 * 
-	 * @param slot
-	 *            номер слота
+	 * Opens the context menu for the item in the specified equipment slot.
+	 *
+	 * @param Integer slot - The index of the equipment slot (0 to 15).
 	 */
 	public void iact(int slot) {
 		itemAction(slot, "iact");

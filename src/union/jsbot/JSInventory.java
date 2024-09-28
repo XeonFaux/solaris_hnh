@@ -68,12 +68,11 @@ public class JSInventory {
 	}
 
 	/**
-	 * Возвращает список вещей
-	 * 
-	 * @param itemmasks
-	 *            Перечисление имен вещей которые надо включить в список
-	 *            также можно исключить вещь из списка добавив !имявещи
-	 * @return массив вещей
+	 * Returns a list of items based on specified criteria.
+	 *
+	 * @param itemmasks A list of item names to include in the result. 
+	 *                  You can exclude an item by prefixing it with '!' (e.g., "!itemName").
+	 * @return An array of JSItem objects that match the criteria.
 	 */
 	public JSItem[] getItems(String... itemmasks) {
 		ArrayList<JSItem> items = new ArrayList<JSItem>();
@@ -100,12 +99,11 @@ public class JSInventory {
 	}
 	
 	/**
-	 * Возвращает список вещей с полным совпадением по имени ресурса
-	 * 
-	 * @param itemmasks
-	 *            Перечисление имен вещей которые надо включить в список
-	 *            также можно исключить вещь из списка добавив !имявещи
-	 * @return массив вещей
+	 * Returns a list of items with an exact match on the resource name.
+	 *
+	 * @param itemmasks A list of item names to include in the result. 
+	 *                  You can exclude an item by prefixing it with '!' (e.g., "!itemName").
+	 * @return An array of JSItem objects that match the criteria.
 	 */
 	public JSItem[] getEqualItems(String... itemmasks) {
 		ArrayList<JSItem> items = new ArrayList<JSItem>();
@@ -132,20 +130,14 @@ public class JSInventory {
 	}
 
 	/**
-	 * Сортирует массив вещей.
-	 * 
-	 * @param items
-	 *            Массив вещей
-	 * @param type
-	 *            Тип сортировки. quality - по качеству, iquality -
-	 *            внутреннее качество (например качество воды в ведре)
-	 * @param desc
-	 *            - флаг сортировки. true - по убыванию, false - по
-	 *            возрастанию
-	 * @return true в случае успеха, иначе false
+	 * Sorts an array of items based on the specified criteria.
+	 *
+	 * @param items An array of JSItem objects to sort.
+	 * @param type The type of sorting: "quality" for quality, 
+	 *             "iquality" for internal quality (e.g., water quality in a bucket).
+	 * @param desc A flag for sorting order: true for descending, false for ascending.
+	 * @return true if sorting was successful, false otherwise.
 	 */
-	// меняю название функции, т.к. жс сам по себе имеет функцию SORT
-	// дабы небыло никакой неведомой хуйни
 	public static boolean sortItems(JSItem[] items, String type,
 			boolean desc) {
 		try {
@@ -163,36 +155,37 @@ public class JSInventory {
 	}
 
 	/**
-	 * Кладет в инвентарь вещь в указанные координаты инвентаря. Кладет то,
-	 * что на курсоре.
-	 * 
-	 * @param c
-	 *            Координаты
+	 * Drops the item currently held at the specified inventory coordinates.
+	 *
+	 * @param c The coordinates where the item should be dropped.
 	 */
 	public void drop(Coord c) {
 		wdg().wdgmsg("drop", c);
 	}
 
 	/**
-	 * Перегруженная функция
+	 * Overloaded method for dropping an item using separate x and y coordinates.
+	 *
+	 * @param x The x-coordinate.
+	 * @param y The y-coordinate.
 	 */
 	public void drop(int x, int y) {
 		drop(new Coord(x, y));
 	}
 
 	/**
-	 * Возврашает размер инвентаря
-	 * 
-	 * @return Размер инвентаря
+	 * Returns the size of the inventory.
+	 *
+	 * @return The size of the inventory as a Coord object.
 	 */
 	public Coord size() {
 		return wdg().size();
 	}
 
 	/**
-	 * Возвращает количество незанятых слотов в инвентаре
-	 * 
-	 * @return Количество пустых слотов
+	 * Returns the number of unoccupied slots in the inventory.
+	 *
+	 * @return The number of empty slots available in the inventory.
 	 */
 	public int freeSlots() {
 		int takenSlots = 0;
@@ -207,10 +200,10 @@ public class JSInventory {
 	}
 
 	/**
-	 * Возвращает массив координат пустых слотов инвентаря. Слоты как всегда
-	 * считаются с верхнего левого угла (0;0).
-	 * 
-	 * @return массив координат
+	 * Returns an array of coordinates for empty slots in the inventory.
+	 * Slots are counted from the top-left corner (0,0).
+	 *
+	 * @return An array of Coord objects representing empty slots.
 	 */
 	public Coord[] freeSlotsCoords() {
 		boolean[][] matrix = new boolean[wdg().size().x][wdg().size().y];
@@ -238,9 +231,10 @@ public class JSInventory {
 	}
 	
 	/**
-	 * Возвращает координаты слота инвентаря для предмета с указанным размером в слотах
-	 * @param size размер предмета в слотах инвентаря (к примеру ведро 2х2)
-	 * @return координаты пустого слота для предмета либо null
+	 * Returns the coordinates of an empty slot in the inventory that can fit an item of the specified size.
+	 *
+	 * @param size The size of the item in slots (e.g., a 2x2 bucket).
+	 * @return The coordinates of an empty slot for the item, or null if none are available.
 	 */
 	public Coord freeSlotSizeCoord(Coord size) {
 		if (size == null || size.x < 1 || size.y < 1)
@@ -276,12 +270,11 @@ public class JSInventory {
 	}
 
 	/**
-	 * Проверяет пустой ли в инвентаре слот с заданными координатами. Слоты
-	 * как всегда считаются с верхнего левого угла (0;0).
-	 * 
-	 * @param slot
-	 *            координаты слота
-	 * @return true, если слот пустой
+	 * Checks if the specified slot in the inventory is empty.
+	 * Slots are counted from the top-left corner (0,0).
+	 *
+	 * @param slot The coordinates of the slot to check.
+	 * @return true if the slot is empty; false otherwise.
 	 */
 	public boolean isFreeSlot(Coord slot) {
 		boolean[][] matrix = new boolean[wdg().size().x][wdg().size().y];
@@ -304,26 +297,30 @@ public class JSInventory {
 	}
 
 	/**
-	 * Перегруженная функция
+	 * Overloaded function to check if a specified slot is free using separate x and y coordinates.
+	 *
+	 * @param x The x-coordinate of the slot.
+	 * @param y The y-coordinate of the slot.
+	 * @return true if the slot is empty; false otherwise.
 	 */
 	public boolean isFreeSlot(int x, int y) {
 		return isFreeSlot(new Coord(x, y));
 	}
 
+	/**
+	 * Checks if the inventory exists.
+	 *
+	 * @return true if the inventory window exists, false otherwise.
+	 */
+	public boolean isActual() {
+		return wdg() != null;
+	}
+	
 	private Inventory wdg() {
 		Widget wdg = UI.instance.getWidget(remote_id);
 		if (wdg instanceof Inventory) {
 			return (Inventory) wdg;
 		} else
 			return null;
-	}
-
-	/**
-	 * Проверяет, существует ли еще объект
-	 * 
-	 * @return true если объект существует
-	 */
-	public boolean isActual() {
-		return wdg() != null;
 	}
 }

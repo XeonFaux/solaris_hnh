@@ -55,7 +55,7 @@ import union.JSBotUtils;
 public class MapView extends Widget implements DTarget, Console.Directory {
 	static Color[] olc = new Color[31];
 	static Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
-	public Coord mc = new Coord(0, 0), mousepos = new Coord(0, 0), pmousepos = new Coord(0, 0), mouseAtTile = new Coord(0, 0);
+	public Coord smc = new Coord(0, 0), mc = new Coord(0, 0), mousepos = new Coord(0, 0), pmousepos = new Coord(0, 0), mouseAtTile = new Coord(0, 0);
 	Camera cam;
 	Sprite.Part[] clickable = {};
 	List<Sprite.Part> obscured = Collections.emptyList();
@@ -764,6 +764,7 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	}
 
 	public void mousemove(Coord c) {
+		smc = c;
 		c = new Coord((int) (c.x / getScale()), (int) (c.y / getScale()));
 		this.pmousepos = c;
 		Coord mc = s2m(c.add(viewoffset(sz, this.mc).inv()));
@@ -1971,6 +1972,11 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 		if (((mask.amb = glob.amblight) == null) || Config.nightvision)
 			mask.amb = new Color(0, 0, 0, 0);
 		drawmap(g);
+		
+		// MOUSE UPDATE WHILE MOVING
+		if (player_moving) {
+			mousemove(smc);
+		}
 		
 		// movement highlight
 		try {

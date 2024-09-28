@@ -61,6 +61,9 @@ public class HavenPanel extends GLCanvas implements Runnable {
 	private String cursmode = "tex";
 	private Resource lastcursor = null;
 	public Coord mousepos = new Coord(0, 0);
+	public boolean mouseDown = false;
+	public int mouseWheelDir;
+	public int mouseButton;
 	public Profile prof = new Profile(300);
 	private Profile.Frame curf = null;
 	private SyncFSM fsm = null;
@@ -344,9 +347,13 @@ public class HavenPanel extends GLCanvas implements Runnable {
 					if (me.getID() == MouseEvent.MOUSE_PRESSED) {
 						ui.mousedown(me, new Coord(me.getX(), me.getY()),
 								me.getButton());
+						mouseDown = true;
+						mouseButton = me.getButton();
 					} else if (me.getID() == MouseEvent.MOUSE_RELEASED) {
 						ui.mouseup(me, new Coord(me.getX(), me.getY()),
 								me.getButton());
+						mouseDown = false;
+						mouseButton = 0;
 					} else if (me.getID() == MouseEvent.MOUSE_MOVED
 							|| me.getID() == MouseEvent.MOUSE_DRAGGED) {
 						mousepos = new Coord(me.getX(), me.getY());
@@ -354,6 +361,7 @@ public class HavenPanel extends GLCanvas implements Runnable {
 					} else if (me instanceof MouseWheelEvent) {
 						ui.mousewheel(me, new Coord(me.getX(), me.getY()),
 								((MouseWheelEvent) me).getWheelRotation());
+						mouseWheelDir = ((MouseWheelEvent) me).getWheelRotation();
 					}
 				} else if (e instanceof KeyEvent) {
 					KeyEvent ke = (KeyEvent) e;

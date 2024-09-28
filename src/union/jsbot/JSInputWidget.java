@@ -14,16 +14,24 @@ public class JSInputWidget extends Window {
 		private TextEntry lineEdit;
 
 		/**
-		 * Конструктор JSInputWidget. Его трогать не нужно. Здесь будет описана
-		 * краткая работа с ним.
+		 * Constructor for JSInputWidget. This should not be modified. 
+		 * A brief example of usage is provided below.
 		 * 
-		 * Пример: var iw = haven.getInputWidget(250, 250, "Input smth",
-		 * "Label text"); var ID = 0; if(iw != null) {
-		 * if(iw.waitForPress(20000)) { ID = iw.intValue(); iw.close(); } else
-		 * iw.close(); } Данный пример показывает как в переменную ID считать
-		 * числовое значение. При нажатии на кнопку "Ок" в окне, оно не
-		 * закрывается, а скрывается, поэтому, хорошим тоном считается закрытие
-		 * окна (с помощью метода close()), когда оно уже не нужно.
+		 * Example:
+		 * var iw = jgetInputWidget(250, 250, "Input something", "Label text");
+		 * var ID = 0;
+		 * if (iw != null) {
+		 *     if (iw.waitForPress(20000)) {
+		 *         ID = iw.intValue();
+		 *         iw.close();
+		 *     } else {
+		 *         iw.close();
+		 *     }
+		 * }
+		 * This example shows how to read a numeric value into the variable ID. 
+		 * When the "Ok" button is pressed in the window, it hides instead of closing, 
+		 * so it is good practice to close the window using the close() method 
+		 * when it is no longer needed.
 		 */
 		public JSInputWidget(Coord c, String header, String label) {
 			super(c, Coord.z, UI.instance.root, header);
@@ -41,12 +49,10 @@ public class JSInputWidget extends Window {
 		}
 
 		/**
-		 * Ожидание нажатия кнопки "Ок"
-		 * 
-		 * @param timeout
-		 *            время ожидания
-		 * @return true, если за указанный период времени была нажата кнопка
-		 *         "Ок"
+		 * Waits for the "Ok" button to be pressed.
+		 *
+		 * @param Integer timeout - The duration to wait (in milliseconds).
+		 * @return A {@code Boolean} value. {@code true} if the "Ok" button was pressed within the specified timeout period, {@code false} otherwise.
 		 */
 		public boolean waitForPress(int timeout) {
 			if (timeout == 0)
@@ -66,16 +72,9 @@ public class JSInputWidget extends Window {
 		}
 
 		/**
-		 * Закрывает окно
-		 */
-		public void close() {
-			ui.destroy(this);
-		}
-
-		/**
-		 * Возвращает текст из поля ввода
-		 * 
-		 * @return текст, либо "", если кнопка "Ок" еще не была нажата
+		 * Retrieves the text from the input field.
+		 *
+		 * @return A {@code String} containing the text input, or an empty {@code String} if the "Ok" button has not been pressed.
 		 */
 		public String textValue() {
 			if (okClicked)
@@ -84,9 +83,9 @@ public class JSInputWidget extends Window {
 		}
 
 		/**
-		 * Возвращает числовое значение из поля ввода
-		 * 
-		 * @return числовое значение, либо 0, если в поле ввода хуита
+		 * Retrieves the text in the input field as an integer value.
+		 *
+		 * @return An {@code Integer} value of the input. If the input cannot be converted, then a {@code 0} is returned.
 		 */
 		public int intValue() {
 			if (okClicked) {
@@ -101,14 +100,14 @@ public class JSInputWidget extends Window {
 		}
 
 		/**
-		 * Метод, который не надо трогать
+		 * Closes the input widget.
 		 */
-		public void destroy() {
-			super.destroy();
+		public void close() {
+			ui.destroy(this);
 		}
-
+		
 		/**
-		 * Метод, который не надо трогать
+		 * Method that should not be used/modified. [Not sure why this is included if it shouldn't be used. Too lazy to research at the moment.]
 		 */
 		public void wdgmsg(Widget sender, String msg, Object... args) {
 			if (sender == cbtn) {
@@ -119,17 +118,24 @@ public class JSInputWidget extends Window {
 		}
 
 		/**
-		 * Метод, который не надо трогать
+		 * Method that should not be used/modified. [Not sure why this is included if it shouldn't be used. Too lazy to research at the moment.]
 		 */
 		public boolean type(char key, java.awt.event.KeyEvent ev) {
 			if (key == 27) {
 				close();
 			}
 			if (key == 10) {
-				// позволяет "нажать" кнопку Ok нажав клавишу Enter
+				// Simulates clicking the "Ok" button when Enter is pressed.
 				okClicked = true;
 				hide();
 			}
 			return (super.type(key, ev));
+		}
+		
+		/**
+		 * Method that should not be used/modified. [Not sure why this is included if it shouldn't be used. Too lazy to research at the moment.]
+		 */
+		public void destroy() {
+			super.destroy();
 		}
 	}

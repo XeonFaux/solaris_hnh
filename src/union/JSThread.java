@@ -15,6 +15,7 @@ import union.JSBot.JSDeprecatedHaven;
 import union.JSUtils.StoppableContext;
 import union.JSUtils.StoppedExecutionException;
 import union.jsbot.JSHaven;
+import union.jsbot.JSMouse;
 
 @SuppressWarnings("deprecation")
 public class JSThread extends Thread {
@@ -41,6 +42,7 @@ public class JSThread extends Thread {
 		try {
 			jsScope = jsContext.initStandardObjects();
 			loadStaticClass(jsScope, JSHaven.class);
+			loadStaticClass(jsScope, JSMouse.class);
 			Object jsOut = Context.javaToJS(System.out, jsScope);
 			ScriptableObject.putProperty(jsScope, "out", jsOut);
 			try {

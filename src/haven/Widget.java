@@ -504,6 +504,14 @@ public class Widget {
 		return (null);
 	}
 
+	public void setSize(Coord size) {
+		sz = size;
+	}
+	
+	public void setPosition(Coord pos) {
+		c = pos;
+	}
+	
 	public void hide() {
 		visible = false;
 	}

@@ -1,10 +1,17 @@
 package union.jsbot;
 
 import haven.Button;
+import haven.CheckBox;
+import haven.Coord;
+import haven.Label;
 import haven.Widget;
 import haven.Window;
 import union.JSBot;
 import union.JSGUI.JSGUI_Widget;
+
+import java.awt.*;
+
+import static union.jsbot.JSHaven.unWrapCoord;
 
 public class JSGUI_Window extends JSGUI_Widget {
 	public JSGUI_Window(int lid) {
@@ -12,25 +19,78 @@ public class JSGUI_Window extends JSGUI_Widget {
 	}
 	
 	/**
-	 * Показать/скрыть кнопку "закрыть" у окна
+	 * Toggles the visibility of the close button on the window.
 	 */
 	public void toggleCloseButton() {
 		((Window)wdg()).cbtn.visible = !((Window)wdg()).cbtn.visible;
 	}
 	
 	/**
-	 * Закрыть окно
+	 * Closes the window by simulating a click on the close button.
 	 */
 	public void close() {
 		((Window)wdg()).cbtn.click();
 	}
+	
+	/**
+	 * Sets the title of the window.
+	 *
+	 * @param String title - The new title for the window.
+	 */
+	public void setTitle(String title) { ((Window)wdg()).cap = Window.cf.render(title, Color.WHITE); }
 
-    /**
-     * Ждет нажатия кнопки в окне
-     * @return текст нажатой кнопки
-     * @param timeout таймаут.
-     * Других идей у меня небыло
-     */
+	/**
+	 * Sets the position of the window to the specified coordinates.
+	 *
+	 * @param jCoord pos - The new position for the window.
+	 */
+	public void setPosition(Coord pos) {
+		((Window)wdg()).setPosition(pos);
+	}
+	
+	/**
+	 * Resizes the window to the specified dimensions.
+	 *
+	 * @param jCoord size - The new size of the window.
+	 */
+	public void setSize(Coord size) {
+		((Window)wdg()).resize(size);
+	}
+	
+	/**
+	 * Retrieves the text of the window.
+	 *
+	 * @return A {@code String} containing the text of the window.
+	 */
+	public String getTitle() {
+		return ((Window)wdg()).cap.text;
+	}
+	
+	/**
+	 * Retrieves the (top left) position of the window.
+	 *
+	 * @return A {@code Coord} containing the position of the window.
+	 */
+	public Coord getPosition() {
+		return ((Window)wdg()).c;
+	}
+	
+	/**
+	 * Retrieves the size of the window.
+	 *
+	 * @return A {@code Coord} containing the size of the window.
+	 */
+	public Coord getSize() {
+		return ((Window)wdg()).sz;
+	}
+	
+	/**
+	 * Waits for a button click in the window, with an optional timeout.
+	 *
+	 * @param Integer timeout - The maximum time to wait for a button click, in milliseconds.
+	 *                If set to 0, the method will wait indefinitely for a button click.
+	 * @return A {@code String} containing the text of the button that was clicked, or an empty {@code String} if no button was clicked within the timeout.
+	 */
 	public String waitButtonClick(int timeout) {
 		boolean inf = false;
         if (timeout == 0)
@@ -45,7 +105,7 @@ public class JSGUI_Window extends JSGUI_Widget {
 				}
 				else if (i instanceof CheckBox)
 				{
-					Checkbox c = (Checkbox) i;
+					CheckBox c = (CheckBox) i;
 					if (c.isChanged()) return c.lbl.text;
 				}
 			}
@@ -58,7 +118,9 @@ public class JSGUI_Window extends JSGUI_Widget {
 	}
 	
 	/**
-	 * Перегрузка для уже имеющихся скриптов
+	 * Overloaded method for existing scripts, waits indefinitely for a button click.
+	 *
+	 * @return A {@code String} containing the text of the button that was clicked.
 	 */
 	public String waitButtonClick() {
 		return waitButtonClick(0);

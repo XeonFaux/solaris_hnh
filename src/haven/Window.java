@@ -50,7 +50,7 @@ public class Window extends Widget implements DTarget {
 			Resource.loadimg("gfx/hud/fbtnh") };
 	static final BufferedImage grip = Resource.loadimg("gfx/hud/gripbr");
 	static Color cc = Color.WHITE;
-	static Text.Foundry cf = new Text.Foundry(new Font("Serif", Font.PLAIN, 12));
+	public static Text.Foundry cf = new Text.Foundry(new Font("Serif", Font.PLAIN, 12));
 	static IBox wbox;
 	boolean dt = false;
 	public boolean justclose = false;
@@ -192,6 +192,14 @@ public class Window extends Widget implements DTarget {
 		ssz = sz;
 		wsz = sz.sub(tlo).sub(rbo);
 		asz = wsz.sub(wbox.bl.sz()).sub(wbox.br.sz()).sub(mrgn.mul(2));
+	}
+	
+	public void resize(Coord size) {
+		ssz = new Coord(sz);
+		size = size.add(tlo).add(rbo).add(wbox.bisz()).add(mrgn.mul(2));
+		this.sz = size;
+		atl = new Coord(wbox.bl.sz().x, wbox.bt.sz().y).add(tlo);
+		wsz = size.add(tlo.inv()).add(rbo.inv());
 	}
 
 	public void pack() {
