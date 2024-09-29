@@ -107,18 +107,6 @@ public class JSHaven {
 	public static JSInputWidget jGetInputWidget(int x, int y, String header, String label){
 		return new JSInputWidget(new Coord(x, y), header, label);
 	}
-	
-	/**
-	 * Overloaded method for creating an input window, using a jCoord position instead.
-	 *
-	 * @param jCoord pos - The coordinates for the window's position on the screen.
-	 * @param String header - The title of the window.
-	 * @param String label - The label text above the input field.
-	 * @return A {@code JSInputWidget} object for user input.
-	 */
-	public static JSInputWidget jGetInputWidget(Coord pos, String header, String label){
-		return new JSInputWidget(pos, header, label);
-	}
 
 	/**
 	 * Pauses the current thread for a specified duration.
