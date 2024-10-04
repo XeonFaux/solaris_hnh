@@ -80,4 +80,13 @@ public class JSGUI_TextEntry extends JSGUI_Widget {
 			return 0;
 		}
 	}
+	
+	/**
+	 * Determines if the text entry box is being focused/altered.
+	 *
+	 * @return A {@code Boolean} value of {@code true} if the TextEntry box is being focused/altered, otherwise {@code false}.
+	 */
+	public boolean isFocused() {
+		return ((TextEntry)wdg()).hasfocus;
+	}
 }

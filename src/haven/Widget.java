@@ -38,7 +38,7 @@ public class Widget {
 	public Widget child;
 	public Widget lchild;
 	public Widget parent;
-	boolean focustab = false, focusctl = false, hasfocus = false;
+	public boolean focustab = false, focusctl = false, hasfocus = false;
 	public boolean visible = true;
 	private boolean canfocus = false, autofocus = false;
 	public boolean canactivate = false, cancancel = false;
