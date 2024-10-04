@@ -644,13 +644,13 @@ public class CharWnd extends Window {
 	}
 
 	public class Study extends Widget {
-		Label attlbl, lplabel;
+		Label attlbl, lplabel, lphlabel;
 		Window wnd;
 		boolean svis, attached = true;
 		private Coord detsz = new Coord(110, 150);
 		private Coord detc = new Coord(-145, -75);
 		int attlimit, attused = 0;
-		long studylp;
+		long studylp, studylph;
 
 		public Study(Widget parent) {
 			super(Coord.z, new Coord(400, 295), parent);
@@ -658,9 +658,11 @@ public class CharWnd extends Window {
 			Foundry fnd = new Foundry(new Font("SansSerif", Font.PLAIN, 12));
 			new Label(new Coord(138, 202), this, "Attention:", fnd);
 			new Label(new Coord(138, 222), this, "Study LP:", fnd);
+			new Label(new Coord(138, 242), this, "LP/Hour:", fnd);
 			attlimit = ui.sess.glob.cattr.get("intel").comp;
 			attlbl = new Label(new Coord(200, 202), this, "", fnd);
 			lplabel = new Label(new Coord(200, 222), this, "", fnd);
+			lphlabel = new Label(new Coord(200, 242), this, "", fnd);
 
 			canhastrash = false;
 			visible = false;
@@ -668,6 +670,7 @@ public class CharWnd extends Window {
 
 		private void upd() {
 			lplabel.settext(String.valueOf(studylp));
+			lphlabel.settext(String.valueOf(studylph));
 			attlbl.settext(attused + "/" + attlimit);
 			attlbl.c.x = 263 - attlbl.sz.x;
 		}
@@ -731,6 +734,7 @@ public class CharWnd extends Window {
 
 		public void updateStudyLp() {
 			studylp = 0;
+			studylph = 0;
 			for (Widget wdg = this.child; wdg != null; wdg = wdg.next) {
 				if (wdg instanceof Inventory) {
 					Inventory sinv = (Inventory) wdg;
@@ -740,6 +744,7 @@ public class CharWnd extends Window {
 							if (((Item) sitem).curio_stat == null)
 								continue;
 							studylp += Math.round(it.curio_stat.baseLP * it.qmult * UI.instance.wnd_char.getExpMode());
+							studylph += Math.round((studylp / it.curio_stat.studyTime) * 60);
 						}
 					}
 				}

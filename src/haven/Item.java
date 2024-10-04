@@ -236,6 +236,10 @@ public class Item extends Widget implements DTarget {
 				g.chcolor();
 			}
 		}
+		
+		if (FEP == null) { calcFEP(); }
+		if (curioStr == null) { calcCurio(); }
+		
 		if(Config.flaskMeters){
 			if (ttres.name.lastIndexOf("waterflask") > 0) {
 				drawBar(g, 2, clrWater, 7);
@@ -308,6 +312,18 @@ public class Item extends Widget implements DTarget {
 	public double qmult;
 	private String FEP = null;
 
+	private void calcCurio() {
+		if (this.curio_stat == null) { return; }
+			
+		long LP = Math.round(curio_stat.baseLP * qmult * UI.instance.wnd_char.getExpMode());
+		long LPM = Math.round(LP / curio_stat.studyTime);
+		int time = curio_stat.studyTime*(100 - meter - 1)/100;
+		int h = time/60;
+		int m = time%60;
+		long LPH = Math.round(LPM * 60);
+		curioStr = String.format("\nLP: %d, Weight: %d\nStudy time: %d %2dm\nLPH: %d", LP, curio_stat.attention, h, m, LPH);
+	}
+	
 	private void calcFEP() {
 		Map<String, Float> fep;
 		String name = name();
