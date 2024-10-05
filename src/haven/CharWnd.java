@@ -783,6 +783,44 @@ public class CharWnd extends Window {
 		new Label(new Coord(230, y), cattr, nm + ":");
 		new SAttr(id, 320, y);
 	}
+	
+	private void softcapval(int y, String attr, String skl, String nm)
+	{
+		int x = 10;
+		new Img(new Coord(x, y), Resource.loadtex("gfx/hud/charsh/" + attr),
+				cattr);
+		new Img(new Coord(x += 15, y), Resource.loadtex("gfx/hud/charsh/" + skl),
+				cattr);
+		new Label(new Coord(x += 20, y), cattr, nm + ":");
+		
+		int attrValue = getStat(attr);
+		int sklValue = getStat(skl);
+		
+		// A bit ugly, maybe I'll think up a better way in the future.
+		Label labl;
+		if (attr == "perc" && skl == "explore")
+		{
+			labl = new Label(new Coord(x += 75, y), cattr, "" +  Math.round(attrValue * sklValue));
+		}
+		else
+		{
+			labl = new Label(new Coord(x += 75, y), cattr, "" +  Math.round(Math.sqrt(attrValue * sklValue)));
+		}
+		labl.setcolor(Color.WHITE);
+		
+		attrValue = getStatTotal(attr);
+		sklValue = getStatTotal(skl);
+		Label labl2;
+		if (attr == "perc" && skl == "explore")
+		{
+			labl2 = new Label(new Coord(x += 35, y), cattr, "" + Math.round(attrValue * sklValue));
+		}
+		else
+		{
+			labl2 = new Label(new Coord(x += 35, y), cattr, "" + Math.round(Math.sqrt(attrValue * sklValue)));
+		}
+		labl2.setcolor(buff);
+	}
 
 	public CharWnd(Coord c, Widget parent, int studyid) {
 		super(c, new Coord(400, 340), parent, "Character Sheet");
@@ -799,8 +837,8 @@ public class CharWnd extends Window {
 		baseval(y += 15, "csm", "Charisma");
 		baseval(y += 15, "dxt", "Dexterity");
 		baseval(y += 15, "psy", "Psyche");
-		foodm = new FoodMeter(new Coord(10, 180), cattr);
-
+		foodm = new FoodMeter(new Coord(10, 170), cattr);
+		
 		int expbase = 220;
 		new Label(new Coord(210, expbase), cattr, "Cost:");
 		cost = new Label(new Coord(300, expbase), cattr, "0");
@@ -847,6 +885,17 @@ public class CharWnd extends Window {
 		skillval(y += 15, "cooking", "Cooking");
 		skillval(y += 15, "farming", "Farming");
 		skillval(y += 15, "survive", "Survival");
+		
+		
+		y = 210;
+		softcapval(y, 		"perc", "explore", "Sight"); // Perc x Exp
+		softcapval(y += 15, "perc", "cooking", "Baking");   // Perc x Cooking
+		softcapval(y += 15, "psy", "smithing", "Goldsmithing"); // Psy x Smith
+		softcapval(y += 15, "str", "smithing", "Metalworking"); // Str x Smith
+		softcapval(y += 15, "intel", "stealth", "Evasion"); // Int x Stealth
+		softcapval(y += 15, "dxt", "sewing", "Weaving"); // Dex x Sewing
+		softcapval(y += 15, "psy", "sewing", "Psycrafting"); // Psy x Sewing
+	
 
 		skill = new Widget(Coord.z, new Coord(400, 275), this);
 		ski = new SkillInfo(new Coord(10, 10), new Coord(180, 260), skill);
@@ -900,7 +949,7 @@ public class CharWnd extends Window {
 			ui.bind(study, studyid);
 
 		int bx = 10;
-		new IButton(new Coord(bx, 310), this,
+		new IButton(new Coord(bx, 320), this,
 				Resource.loadimg("gfx/hud/charsh/attribup"),
 				Resource.loadimg("gfx/hud/charsh/attribdown")) {
 			public void click() {
@@ -911,7 +960,7 @@ public class CharWnd extends Window {
 			}
 		}.tooltip = "Attributes";
 		if (studyid >= 0) {
-			new IButton(new Coord(bx += 70, 310), this,
+			new IButton(new Coord(bx += 70, 320), this,
 					Resource.loadimg("gfx/hud/charsh/ideasup"),
 					Resource.loadimg("gfx/hud/charsh/ideasdown")) {
 				public void click() {
@@ -922,7 +971,7 @@ public class CharWnd extends Window {
 				}
 			}.tooltip = "Study";
 		}
-		new IButton(new Coord(bx += 70, 310), this,
+		new IButton(new Coord(bx += 70, 320), this,
 				Resource.loadimg("gfx/hud/charsh/skillsup"),
 				Resource.loadimg("gfx/hud/charsh/skillsdown")) {
 			public void click() {
@@ -932,7 +981,7 @@ public class CharWnd extends Window {
 				study.visible = false;
 			}
 		}.tooltip = "Skills";
-		new IButton(new Coord(bx += 70, 310), this,
+		new IButton(new Coord(bx += 70, 320), this,
 				Resource.loadimg("gfx/hud/charsh/worshipup"),
 				Resource.loadimg("gfx/hud/charsh/worshipdown")) {
 			public void click() {
@@ -999,6 +1048,16 @@ public class CharWnd extends Window {
 		for (Attr attr : attrs.values()) {
 			if (attr.attr.nm.equals(name)) {
 				ret = attr.attr.base;
+			}
+		}
+		return ret;
+	}
+	
+	public static int getStatTotal(String name) {
+		int ret = 0;
+		for (Attr attr : attrs.values()) {
+			if (attr.attr.nm.equals(name)) {
+				ret = attr.attr.comp;
 			}
 		}
 		return ret;
