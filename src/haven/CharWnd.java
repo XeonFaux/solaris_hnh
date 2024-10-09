@@ -43,6 +43,7 @@ public class CharWnd extends Window {
 	int btime = 0;
 	SkillList psk, nsk;
 	SkillInfo ski;
+	public static ArrayList<SCapVal> sCaps = new ArrayList<SCapVal>();
 	public static FoodMeter foodm;
 	public static Study study;
 	static Map<String, Attr> attrs = new TreeMap<String, Attr>();
@@ -210,6 +211,13 @@ public class CharWnd extends Window {
 			if ((nm == "intel") && study != null) {
 				study.setattnlimit(attr.comp);
 			}
+			
+			for (int i = 0; i < sCaps.size(); i++) {
+				SCapVal scap = sCaps.get(i);
+				if (scap != null) {
+					scap.update();
+				}
+			}
 		}
 	}
 
@@ -341,6 +349,56 @@ public class CharWnd extends Window {
 			tvalc = attr.comp;
 			cost = 0;
 			upd();
+		}
+	}
+	
+	class SCapVal {
+		String[] as;
+		boolean sqrt;
+		Label baseLbl;
+		Label totalLbl;
+		
+		public SCapVal(int x, int y, String[] as, boolean sqrt)
+		{
+			this.as = as;
+			this.sqrt = sqrt;
+			
+			baseLbl = new Label(new Coord(x += 75, y), cattr, "");
+			baseLbl.setcolor(Color.WHITE);
+			
+			totalLbl = new Label(new Coord(x += 35, y), cattr, "");
+	    	totalLbl.setcolor(buff);
+			
+			update();
+		}
+		
+		public void update()
+		{
+			int baseVal = 1;
+		    int totalVal = 1;
+			for (int i = 0; i < as.length; i++)
+			{
+				// Values
+				baseVal *= getStat(as[i]);
+		        totalVal *= getStatTotal(as[i]);
+			}
+			
+			if (sqrt) { 
+				baseVal = (int) Math.round(Math.sqrt(baseVal));
+				totalVal = (int) Math.round(Math.sqrt(totalVal));
+			}
+
+	    	baseLbl.settext("" + baseVal);
+
+		    // Show total value (if necessary)
+		    if (baseVal != totalVal)
+		    {
+		    	totalLbl.settext("" + totalVal);
+		    }
+		    else
+		    {
+		    	totalLbl.settext("");
+		    }
 		}
 	}
 
@@ -784,42 +842,21 @@ public class CharWnd extends Window {
 		new SAttr(id, 320, y);
 	}
 	
-	private void softcapval(int y, String attr, String skl, String nm)
+	
+	private SCapVal softcapval(int y, String[] as, String nm, boolean sqrt)
 	{
-		int x = 10;
-		new Img(new Coord(x, y), Resource.loadtex("gfx/hud/charsh/" + attr),
-				cattr);
-		new Img(new Coord(x += 15, y), Resource.loadtex("gfx/hud/charsh/" + skl),
-				cattr);
-		new Label(new Coord(x += 20, y), cattr, nm + ":");
+		int x = 20;
 		
-		int attrValue = getStat(attr);
-		int sklValue = getStat(skl);
+		for (int i = 0; i < as.length; i++)
+		{
+			// Icons
+			Img tx = new Img(new Coord(x - (15 * i), y), Resource.loadtex("gfx/hud/charsh/" + as[i]), cattr);
+		}
 		
-		// A bit ugly, maybe I'll think up a better way in the future.
-		Label labl;
-		if (attr == "perc" && skl == "explore")
-		{
-			labl = new Label(new Coord(x += 75, y), cattr, "" +  Math.round(attrValue * sklValue));
-		}
-		else
-		{
-			labl = new Label(new Coord(x += 75, y), cattr, "" +  Math.round(Math.sqrt(attrValue * sklValue)));
-		}
-		labl.setcolor(Color.WHITE);
+		// Name
+		new Label(new Coord(x += 15, y), cattr, nm + ":");
 		
-		attrValue = getStatTotal(attr);
-		sklValue = getStatTotal(skl);
-		Label labl2;
-		if (attr == "perc" && skl == "explore")
-		{
-			labl2 = new Label(new Coord(x += 35, y), cattr, "" + Math.round(attrValue * sklValue));
-		}
-		else
-		{
-			labl2 = new Label(new Coord(x += 35, y), cattr, "" + Math.round(Math.sqrt(attrValue * sklValue)));
-		}
-		labl2.setcolor(buff);
+		return new SCapVal(x, y, as, sqrt);
 	}
 
 	public CharWnd(Coord c, Widget parent, int studyid) {
@@ -888,15 +925,15 @@ public class CharWnd extends Window {
 		
 		
 		y = 210;
-		softcapval(y, 		"perc", "explore", "Sight"); // Perc x Exp
-		softcapval(y += 15, "perc", "cooking", "Baking");   // Perc x Cooking
-		softcapval(y += 15, "psy", "smithing", "Goldsmithing"); // Psy x Smith
-		softcapval(y += 15, "str", "smithing", "Metalworking"); // Str x Smith
-		softcapval(y += 15, "intel", "stealth", "Evasion"); // Int x Stealth
-		softcapval(y += 15, "dxt", "sewing", "Weaving"); // Dex x Sewing
-		softcapval(y += 15, "psy", "sewing", "Psycrafting"); // Psy x Sewing
+		sCaps = new ArrayList<SCapVal>();
+		sCaps.add(softcapval(y, 		new String[]{"perc", "explore"}, "Sight", false)); // Perc x Exp
+		sCaps.add(softcapval(y += 15, new String[]{"perc", "cooking"}, "Baking", true));   // Perc x Cooking
+		sCaps.add(softcapval(y += 15, new String[]{"psy", "smithing"}, "Goldsmithing", true)); // Psy x Smith
+		sCaps.add(softcapval(y += 15, new String[]{"str", "smithing"}, "Metalworking", true)); // Str x Smith
+		sCaps.add(softcapval(y += 15, new String[]{"intel", "stealth"}, "Evasion", true)); // Int x Stealth
+		sCaps.add(softcapval(y += 15, new String[]{"dxt", "sewing"}, "Weaving", true)); // Dex x Sewing
+		sCaps.add(softcapval(y += 15, new String[]{"psy", "sewing"}, "Psycrafting", true)); // Psy x Sewing
 	
-
 		skill = new Widget(Coord.z, new Coord(400, 275), this);
 		ski = new SkillInfo(new Coord(10, 10), new Coord(180, 260), skill);
 		new Label(new Coord(210, 10), skill, "Available Skills:");

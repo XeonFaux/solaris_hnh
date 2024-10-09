@@ -199,6 +199,10 @@ public class Item extends Widget implements DTarget {
 				g.image(tex, Coord.z);
 				g.chcolor();
 			} else {
+				if(res.get().name.equals("gfx/invobjs/silkmoth") && tooltip.contains("Female") )
+					g.chcolor(255, 100, 255, 255);
+				else
+					g.chcolor();
 				g.image(tex, Coord.z);
 			}
 			if (num >= 0) {
